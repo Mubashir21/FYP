@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+import uvicorn
 
 # Configure logging
 logging.basicConfig(
@@ -137,7 +138,6 @@ async def health_check():
         "timestamp": datetime.utcnow().isoformat()
     }
 
-if __name__ == "__main__":
-    import uvicorn
-    settings = get_settings()  # Validate settings on startup
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# if __name__ == "__main__":
+#     settings = get_settings()  # Validate settings on startup
+#     uvicorn.run(app, host="0.0.0.0", port=8000)
