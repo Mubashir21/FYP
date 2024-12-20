@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from functools import lru_cache
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 import uuid
 import os
@@ -33,6 +33,7 @@ class DetectionPayload(BaseModel):
 class DetectionResponse(BaseModel):
     status: str
     request_id: str
+    payload: DetectionPayload
 
 # Settings management
 @lru_cache()
@@ -101,7 +102,7 @@ async def process_detection(
     try:
         # Add timestamp if not provided
         if not payload.timestamp:
-            payload.timestamp = datetime.utcnow().isoformat()
+            payload.timestamp = datetime.now(timezone.utc).isoformat()
 
         # Validate confidence score
         if payload.confidence_score < 0.75:
@@ -118,7 +119,8 @@ async def process_detection(
 
         return {
             "status": "success",
-            "request_id": request.state.request_id
+            "request_id": request.state.request_id,
+            "payload": payload
         }
 
     except HTTPException:
@@ -135,9 +137,5 @@ async def health_check():
     """Health check endpoint"""
     return {
         "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
-
-# if __name__ == "__main__":
-#     settings = get_settings()  # Validate settings on startup
-#     uvicorn.run(app, host="0.0.0.0", port=8000)
