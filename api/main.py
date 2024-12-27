@@ -13,6 +13,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 import uvicorn
+from supabase import create_client
 
 # Configure logging
 logging.basicConfig(
@@ -24,8 +25,8 @@ logger = logging.getLogger(__name__)
 # Pydantic Models
 class DetectionPayload(BaseModel):
     confidence_score: float = Field(..., ge=0.0, le=1.0, description="Confidence score between 0 and 1")
-    device_id: Optional[int] = Field(None, description="Optional device identifier")
-    timestamp: Optional[str] = Field(
+    device_id: Optional[str] = Field(None, description="Optional device identifier")
+    created_at: Optional[str] = Field(
         None,
         description="Timestamp of the detection event"
     )
@@ -42,8 +43,14 @@ def get_settings():
     api_key = os.getenv("API_KEY")
     if not api_key:
         raise ValueError("API_KEY environment variable is not set")
+    
+    # Initialize Supabase client
+    supabase_url = os.getenv("SUPABASE_URL")
+    supabase_key = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+    supabase = create_client(supabase_url, supabase_key)
     return {
-        "api_key": api_key
+        "api_key": api_key,
+        "supabase": supabase
     }
 
 # Rate limiting
@@ -101,8 +108,8 @@ async def process_detection(
 ):
     try:
         # Add timestamp if not provided
-        if not payload.timestamp:
-            payload.timestamp = datetime.now(timezone.utc).isoformat()
+        if not payload.created_at:
+            payload.created_at = datetime.now(timezone.utc).isoformat()
 
         # Validate confidence score
         if payload.confidence_score < 0.75:
@@ -117,11 +124,39 @@ async def process_detection(
             f" for device {payload.device_id}"
         )
 
-        return {
-            "status": "success",
-            "request_id": request.state.request_id,
-            "payload": payload
+        # Insert into the detections table
+        supabase = get_settings()["supabase"]
+        insert_data = {
+            "created_at": payload.created_at,
+            "confidence_level": payload.confidence_score,
+            "device_code": payload.device_id,
         }
+
+        try:
+            response = supabase.table("detections").insert(insert_data).execute()
+            
+            # The response will have data if successful
+            if not response.data:
+                logger.error("No data returned from Supabase insert")
+                raise HTTPException(
+                    status_code=500,
+                    detail="Error saving detection to the database"
+                )
+
+            logger.info("Detection successfully added to the database")
+
+            return {
+                "status": "success",
+                "request_id": request.state.request_id,
+                "payload": payload
+            }
+
+        except Exception as db_error:
+            logger.error(f"Database error: {str(db_error)}")
+            raise HTTPException(
+                status_code=500,
+                detail="Error saving detection to the database"
+            )
 
     except HTTPException:
         raise
