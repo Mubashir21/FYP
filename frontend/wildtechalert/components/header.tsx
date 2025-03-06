@@ -11,25 +11,13 @@
 export default function Header() {
   return (
     <header>
-      <div className="flex justify-around items-center">
+      <div className="flex justify-around items-center py-5">
         <p>WildTechAlert</p>
-        <div>
-          {/* <Menubar>
-            <MenubarMenu>
-              <MenubarTrigger>File</MenubarTrigger>
-              <MenubarContent>
-                <MenubarItem>
-                  New Tab <MenubarShortcut>⌘T</MenubarShortcut>
-                </MenubarItem>
-                <MenubarItem>New Window</MenubarItem>
-                <MenubarSeparator />
-                <MenubarItem>Share</MenubarItem>
-                <MenubarSeparator />
-                <MenubarItem>Print</MenubarItem>
-              </MenubarContent>
-            </MenubarMenu>
-          </Menubar> */}
-          Hello
+        <div className="flex gap-5">
+          <div>Mission</div>
+          <div>Locations</div>
+          <div>Stakeholders</div>
+          <div>About</div>
         </div>
       </div>
     </header>

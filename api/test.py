@@ -13,7 +13,7 @@ headers = {"Content-Type": "application/json", "X-API-Key": api_key}
 # /detect Endpoint
 url = f"{base_url}/detect"
 payload = {
-    "confidence_score": 0.92,
+    "confidence_score": 0.99,
     "device_id": "24a",
     "created_at": "2024-12-23T12:34:56Z"
 }
