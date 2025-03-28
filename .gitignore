@@ -1,3 +1,5 @@
 api/.env
 api/_pycache_
 frontend/wildtechalert/.env.local
+media
+api/test_files

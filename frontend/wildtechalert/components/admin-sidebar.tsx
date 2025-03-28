@@ -19,37 +19,38 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 // Menu items.
 const items = [
   {
     title: "Dashboard",
-    url: "#",
+    url: "/admin/dashboard",
     icon: Home,
   },
   {
     title: "Detection",
-    url: "#",
+    url: "/admin/detections",
     icon: Radar,
   },
   {
     title: "Devices",
-    url: "#",
+    url: "/admin/devices",
     icon: Projector,
   },
   {
-    title: "Stakholders",
-    url: "#",
+    title: "Stakeholders",
+    url: "/admin/stakeholders",
     icon: Users,
   },
   {
     title: "Alerts",
-    url: "#",
+    url: "/admin/alerts",
     icon: Megaphone,
   },
   {
     title: "Settings",
-    url: "#",
+    url: "/admin/settings",
     icon: Settings,
   },
 ];
@@ -66,10 +67,10 @@ export function AdminSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

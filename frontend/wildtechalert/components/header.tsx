@@ -1,18 +1,11 @@
-// import {
-//   Menubar,
-//   MenubarContent,
-//   MenubarItem,
-//   MenubarMenu,
-//   MenubarSeparator,
-//   MenubarShortcut,
-//   MenubarTrigger,
-// } from "@/components/ui/menubar";
+import Logo from "../public/logo.svg";
+import Image from "next/image";
 
 export default function Header() {
   return (
     <header>
       <div className="flex justify-around items-center py-5">
-        <p>WildTechAlert</p>
+        <Image src={Logo} alt="Logo" width={50} height={50} />
         <div className="flex gap-5">
           <div>Mission</div>
           <div>Locations</div>

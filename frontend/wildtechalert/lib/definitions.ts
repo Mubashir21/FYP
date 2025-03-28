@@ -21,3 +21,10 @@ export type Detection = {
   weather: Record<string, any>; // JSONB (flexible object structure)
   sound_url: string; // Text (likely a URL)
 };
+
+export type WeatherLayer =
+  | "temp"
+  | "precipitation"
+  | "wind"
+  | "clouds"
+  | "none";
