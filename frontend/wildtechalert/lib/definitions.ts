@@ -15,11 +15,16 @@ export type Device = {
 
 export type Detection = {
   id: string; // UUID
-  created_at: string; // Timestamp (ISO 8601 format)
-  confidence_level: number; // Float (4-byte)
+  received_at: string; // Timestamp (ISO 8601 format)
+  detected_at: string; // Timestamp (ISO 8601 format)
+  confidence_level_audio: number; // Float (4-byte)
+  confidence_level_camera: number; // Float (4-byte)
+  audio_detected: boolean;
+  camera_detected: boolean;
   device_code: string; // Text
   weather: Record<string, any>; // JSONB (flexible object structure)
   sound_url: string; // Text (likely a URL)
+  image_url: string; // Text (likely a URL)
 };
 
 export type WeatherLayer =

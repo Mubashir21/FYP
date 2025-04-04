@@ -2,6 +2,7 @@
 
 import { Detection, Device } from "@/lib/definitions";
 import { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
 
 export const DeviceColumns: ColumnDef<Device>[] = [
   {
@@ -72,12 +73,12 @@ export const DeviceColumns: ColumnDef<Device>[] = [
   },
 ];
 
-export const DetectionColumns: ColumnDef<Detection>[] = [
+export const DetectionSummaryColumns: ColumnDef<Detection>[] = [
   {
     accessorKey: "detected_at",
     header: "Detected At",
     cell: ({ row }) => {
-      const timestamp = row.original.created_at;
+      const timestamp = row.original.detected_at;
 
       if (!timestamp) return "N/A"; // Handle missing values
 
@@ -96,10 +97,18 @@ export const DetectionColumns: ColumnDef<Detection>[] = [
     },
   },
   {
-    accessorKey: "confidence_level",
-    header: "Confidence Level",
+    accessorKey: "audio_confidence",
+    header: "Audio Confidence",
     cell: ({ row }) => {
-      const confidenceLevel = row.original.confidence_level; // Get the battery level
+      const confidenceLevel = row.original.confidence_level_audio; // Get the battery level
+      return `${confidenceLevel}%`; // Format as percentage
+    },
+  },
+  {
+    accessorKey: "camera_confidence",
+    header: "Camera Confidence",
+    cell: ({ row }) => {
+      const confidenceLevel = row.original.confidence_level_camera; // Get the battery level
       return `${confidenceLevel}%`; // Format as percentage
     },
   },
@@ -108,11 +117,31 @@ export const DetectionColumns: ColumnDef<Detection>[] = [
     header: "Device",
   },
   {
-    accessorKey: "weather",
-    header: "Weather",
-  },
-  {
     accessorKey: "sound_url",
     header: "Sound URL",
+    cell: ({ row }) => {
+      const soundUrl = row.original.sound_url;
+      return soundUrl ? (
+        <Link href={soundUrl} target="_blank" rel="noopener noreferrer">
+          Click here
+        </Link>
+      ) : (
+        "No link"
+      ); // Render nothing if there's no URL
+    },
+  },
+  {
+    accessorKey: "image_url",
+    header: "Image URL",
+    cell: ({ row }) => {
+      const imageUrl = row.original.image_url;
+      return imageUrl ? (
+        <Link href={imageUrl} target="_blank" rel="noopener noreferrer">
+          Click here
+        </Link>
+      ) : (
+        "No link"
+      ); // Render nothing if there's no URL
+    },
   },
 ];

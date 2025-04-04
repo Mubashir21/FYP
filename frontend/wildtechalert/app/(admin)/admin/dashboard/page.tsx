@@ -1,7 +1,7 @@
 import { DataTable } from "@/components/dashboard/data-table";
 import Map from "@/components/dashboard/map";
 import {
-  DetectionColumns,
+  DetectionSummaryColumns,
   DeviceColumns,
 } from "@/components/dashboard/columns";
 import { detDetections, getDevices } from "@/lib/data";
@@ -20,7 +20,7 @@ export default async function Dashboard() {
         </div>
         <div className="flex flex-col gap-4 md:col-span-4">
           <p className="text-xl">Detections</p>
-          <DataTable columns={DetectionColumns} data={detections} />
+          <DataTable columns={DetectionSummaryColumns} data={detections} />
         </div>
       </div>
     </main>
