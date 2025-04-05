@@ -25,3 +25,19 @@ export async function detDetections() {
 
   return data;
 }
+
+export async function getRegistration() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("registrations")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching registration:", error);
+    return [];
+  }
+
+  return data;
+}

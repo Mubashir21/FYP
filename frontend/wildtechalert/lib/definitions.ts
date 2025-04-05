@@ -33,3 +33,11 @@ export type WeatherLayer =
   | "wind"
   | "clouds"
   | "none";
+
+export type Registration = {
+  id: string; // UUID
+  code: string; // Text
+  status: "used" | "unused"; // enum
+  created_at: string; // Timestamp (ISO 8601 format)
+  used_at: string | null; // Timestamp (ISO 8601 format) or null
+};
