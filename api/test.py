@@ -8,8 +8,8 @@ import mimetypes
 load_dotenv()
 
 # API Details
-base_url = "https://wildtechalert-39e415aada0a.herokuapp.com"
-# base_url = "http://localhost:5000"
+# base_url = "https://wildtechalert-39e415aada0a.herokuapp.com"
+base_url = "http://localhost:5000"
 api_key = api_key = os.getenv("API_KEY")
 # headers = {"Content-Type": "application/json", "X-API-Key": api_key}
 
