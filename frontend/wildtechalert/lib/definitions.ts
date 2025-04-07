@@ -38,6 +38,7 @@ export type Registration = {
   id: string; // UUID
   code: string; // Text
   status: "used" | "unused"; // enum
+  api_key: string; // Text (UUID)
   created_at: string; // Timestamp (ISO 8601 format)
   used_at: string | null; // Timestamp (ISO 8601 format) or null
 };

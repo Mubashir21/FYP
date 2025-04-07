@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 # Import routers
 from routes.detections import router as detections_router
 from routes.handshake import router as handshake_router
+from routes.register import router as register_router
 
 # Rate limiting
 limiter = Limiter(key_func=get_remote_address)
@@ -33,8 +34,9 @@ def create_application() -> FastAPI:
     )
 
     # Include routers with prefixes
-    app.include_router(detections_router, prefix="/detect")
-    app.include_router(handshake_router, prefix="/handshake")
+    app.include_router(detections_router, prefix="")
+    app.include_router(handshake_router, prefix="")
+    app.include_router(register_router, prefix="")
 
     # Rate limit error handler
     @app.exception_handler(RateLimitExceeded)
@@ -44,22 +46,9 @@ def create_application() -> FastAPI:
             content={"detail": "Too many requests, please try again later"}
         )
 
-    # Root endpoint
-    @app.get("/")
-    async def root():
-        return {
-            "message": "Welcome to Wildlife Detection API",
-            "status": "operational",
-            "available_endpoints": [
-                "/detect",
-                "/health"
-            ]
-        }
-
     return app
 
 # Create the application instance
 app = create_application()
 
-# Optional: Print startup message
 print("🚀 Wildlife Detection API Initialized Successfully!")

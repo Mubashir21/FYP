@@ -14,6 +14,10 @@ export const RegistrationColumns: ColumnDef<Registration>[] = [
     header: "Code",
   },
   {
+    accessorKey: "api_key",
+    header: "API Key",
+  },
+  {
     accessorKey: "created_at",
     header: "Created At",
     cell: ({ row }) => {

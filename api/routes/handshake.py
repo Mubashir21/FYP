@@ -1,54 +1,74 @@
 from fastapi import APIRouter, Header, HTTPException
 from datetime import datetime, timezone
-from core.config import get_supabase, get_api_key
+from core.config import get_supabase
 
-router = APIRouter(prefix="/handshake")
+router = APIRouter()
 
 supabase = get_supabase()
 
-@router.post("")
+@router.post("/handshake")
 async def handshake(
-    x_device_code: str = Header(None),
+    x_device_name: str = Header(None),
     x_api_key: str = Header(None)
 ):
     """
     Health check endpoint for devices
-    - Validates API key
+    - Validates device-specific API key
     - Updates device's last ping timestamp
     - Returns server status
     """
-    # Validate API key
-    if x_api_key != get_api_key():
-        raise HTTPException(status_code=401, detail="Unauthorized")
-    
     # Validate device code
-    if not x_device_code:
-        raise HTTPException(status_code=400, detail="Device code is required")
+    if not x_device_name:
+        raise HTTPException(status_code=400, detail="Device name is required")
     
-    # Current timestamp
-    current_time = datetime.now(timezone.utc).isoformat()
-    
+    # Validate API key against the device's registered API key
     try:
+        # Get the device from the database
+        device_response = (
+            supabase.table("devices")
+            .select("api_key")
+            .eq("name", x_device_name)
+            .execute()
+        )
+        
+        # Check if device exists
+        if not device_response.data or len(device_response.data) == 0:
+            raise HTTPException(status_code=404, detail="Device not found")
+        
+        # Get the device's API key
+        device_api_key = device_response.data[0]["api_key"]
+        
+        # Validate the provided API key against the device's API key
+        if x_api_key != device_api_key:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+        
+        # Current timestamp
+        current_time = datetime.now(timezone.utc).isoformat()
+        
         # Update device's last ping
         update_response = (
             supabase.table("devices")
             .update({
                 "last_ping": current_time,
             })
-            .eq("code", x_device_code)
+            .eq("name", x_device_name)
             .execute()
         )
         
         # Log the update (optional)
-        print(f"Updated device {x_device_code} last ping at {current_time}")
+        print(f"Updated device {x_device_name} last ping at {current_time}")
         
         return {
-            "status": "healthy ma boy",
+            "status": "Online",
             "timestamp": current_time,
-            "device_code": x_device_code
+            "device_name": x_device_name
         }
     
     except Exception as e:
+        # Check if this is an HTTPException we've already raised
+        if isinstance(e, HTTPException):
+            raise e
+        
         # Log the error
         print(f"Error updating device ping: {e}")
         
