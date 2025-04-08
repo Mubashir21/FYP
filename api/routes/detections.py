@@ -38,25 +38,24 @@ async def detect(
     if x_api_key != device_api_key:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-     # Validate consistency between files and detection flags
-    audio_detected = data.get("audio_detected", False)
-    camera_detected = data.get("camera_detected", False)
+    # Determine detection status based on file presence
+    audio_detected = sound_file is not None
+    camera_detected = image_file is not None
     
-    # If a sound file is provided, audio_detected should be True
-    if sound_file and not audio_detected:
-        raise HTTPException(status_code=400, detail="Sound file provided but audio_detected is False")
+    # Require at least one file to be present
+    if not audio_detected and not camera_detected:
+        raise HTTPException(status_code=400, detail="At least one file (sound or image) must be provided")
     
-    # If a image file is provided, camera_detected should be True
-    if image_file and not camera_detected:
-        raise HTTPException(status_code=400, detail="Image file provided but camera_detected is False")
-    
-    # If audio_detected is True, confidence_level_audio should be provided
+    # Override the detection flags in the payload data
+    data["audio_detected"] = audio_detected
+    data["camera_detected"] = camera_detected
+
+    # Check for confidence levels if files are provided
     if audio_detected and "confidence_level_audio" not in data:
-        raise HTTPException(status_code=400, detail="audio_detected is True but confidence_level_audio is missing")
+        raise HTTPException(status_code=400, detail="Sound file provided but confidence_level_audio is missing")
     
-    # If camera_detected is True, confidence_level_camera should be provided
     if camera_detected and "confidence_level_camera" not in data:
-        raise HTTPException(status_code=400, detail="camera_detected is True but confidence_level_camera is missing")
+        raise HTTPException(status_code=400, detail="Image file provided but confidence_level_camera is missing")
 
     received_at = datetime.utcnow().isoformat()
     sound_url = None
@@ -103,8 +102,8 @@ async def detect(
         "received_at": received_at,
         "confidence_level_audio": data.get("confidence_level_audio"),
         "confidence_level_camera": data.get("confidence_level_camera"),
-        "audio_detected": data.get("audio_detected"),
-        "camera_detected": data.get("camera_detected"),
+        "audio_detected": audio_detected,
+        "camera_detected": camera_detected,
         "weather": json.dumps(data.get("weather", {})),
         "sound_url": sound_url,
         "image_url": image_url,
