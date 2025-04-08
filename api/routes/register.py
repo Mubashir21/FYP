@@ -38,14 +38,16 @@ async def register_device(
     # Step 3: Update the registration status to "used" and record usage time
     registration_id = registration["id"]
     api_key = registration["api_key"]
+
+    datetime_now = datetime.utcnow().isoformat()
     
     update_data = {
         "status": "used",
-        "used_at": datetime.utcnow().isoformat()
+        "used_at": datetime_now,
     }
     
     supabase.table("registrations").update(update_data).eq("id", registration_id).execute()
-    supabase.table("devices").update({"api_key": api_key, "status": "online"}).eq("id", device_id).execute()
+    supabase.table("devices").update({"api_key": api_key, "status": "online", "registered_at": datetime_now}).eq("id", device_id).execute()
     
     # Step 4: Return the API key to the device
     return {

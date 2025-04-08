@@ -8,11 +8,10 @@ import mimetypes
 load_dotenv()
 
 # API Details
-# base_url = "https://wildtechalert-39e415aada0a.herokuapp.com"
-base_url = "http://localhost:5000"
+base_url = "https://wildtechalert-39e415aada0a.herokuapp.com"
+# base_url = "http://localhost:5000"
 api_key = api_key = os.getenv("API_KEY")
 # headers = {"Content-Type": "application/json", "X-API-Key": api_key}
-
 
 # url = f"{base_url}/detect"
 # # Detection data
@@ -44,21 +43,18 @@ api_key = api_key = os.getenv("API_KEY")
 # print(response.text)
 
 # /health Endpoint
-url = f"{base_url}/handshake"
-headers = {"x-device-name": "24a", "x-api-key": api_key}
-response = requests.post(url, headers=headers)
-print("Handshake:", response.json())
+# url = f"{base_url}/handshake"
+# headers = {"x-device-name": "24a", "x-api-key": api_key}
+# response = requests.post(url, headers=headers)
+# print("Handshake:", response.json())
 
 # register endpoint
-# url = f"{base_url}/register"
-# data = {
-#     "device_name": "24a",  # Use a device name that exists in your devices table
-#     "registration_code": "REG-A520-CF49"  # Use a valid registration code from your registrations table
-# }
+url = f"{base_url}/register"
+headers = {"device-name": "24a", "registration-code": "REG-A520-CF49"}
 
-# # Send the POST request
-# response = requests.post(url, data=data)
+# Send the POST request
+response = requests.post(url, headers=headers)
 
-# # Print response
-# print(f"Status Code: {response.status_code}")
-# print(f"Response Body: {response.json()}")
+# Print response
+print(f"Status Code: {response.status_code}")
+print(f"Response Body: {response.json()}")
