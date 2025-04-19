@@ -6,7 +6,6 @@ export type Device = {
   last_ping: string; // ISO date string
   coordinates: {
     type: "Point"; // Assuming it's always "Point"
-    crs: any; // You might need to define this more precisely if you know its structure
     coordinates: [number, number]; // Assuming it's [longitude, latitude]
   };
   status: "online" | "offline"; // Assuming only these two statuses exist
@@ -24,9 +23,15 @@ export type Detection = {
   audio_detected: boolean;
   camera_detected: boolean;
   device_name: string; // Text
-  weather: Record<string, any>; // JSONB (flexible object structure)
+  weather: WeatherData; // JSONB (flexible object structure)
   sound_url: string; // Text (likely a URL)
   image_url: string; // Text (likely a URL)
+};
+
+export type WeatherData = {
+  temperature?: number;
+  humidity?: number;
+  conditions?: string;
 };
 
 export type WeatherLayer =

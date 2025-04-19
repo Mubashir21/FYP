@@ -2,7 +2,6 @@
 
 import { Registration } from "@/lib/definitions";
 import { ColumnDef } from "@tanstack/react-table";
-import Link from "next/link";
 
 export const RegistrationColumns: ColumnDef<Registration>[] = [
   {

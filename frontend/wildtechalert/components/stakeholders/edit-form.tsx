@@ -8,28 +8,19 @@ import { Stakeholder } from "@/lib/definitions";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { editDevice, editStakeholder } from "@/lib/actions";
-import { editDeviceSchema, editStakeholderSchema } from "@/lib/schema";
-import { wkbToLatLong } from "@/lib/utils";
+import { editStakeholder } from "@/lib/actions";
+import { editStakeholderSchema } from "@/lib/schema";
 
 export default function EditStakeholder({
   stakeholder,

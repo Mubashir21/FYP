@@ -1,14 +1,12 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import * as wkx from "wkx";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export function coordsToWkb(latitude: number, longitude: number) {
-  // Import wkx library (ensure it's installed via npm install wkx)
-  const wkx = require("wkx");
-
   // Validate inputs
   if (typeof latitude !== "number" || latitude < -90 || latitude > 90) {
     throw new Error("Latitude must be a number between -90 and 90");
@@ -35,12 +33,9 @@ export function wkbToLatLong(
     | Buffer
     | {
         type: "Point";
-        crs: any;
         coordinates: [number, number];
       }
 ): { latitude: number; longitude: number } {
-  const wkx = require("wkx");
-
   // Handle GeoJSON Point
   if (
     typeof coordinates === "object" &&
@@ -80,9 +75,11 @@ export function wkbToLatLong(
       throw new Error("WKB represents a geometry that is not a Point");
     }
 
+    const point = geometry as wkx.Point;
+
     return {
-      latitude: geometry.y,
-      longitude: geometry.x,
+      latitude: point.y,
+      longitude: point.x,
     };
   } catch (error) {
     throw new Error(

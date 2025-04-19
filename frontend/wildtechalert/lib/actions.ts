@@ -11,7 +11,6 @@ import {
   editDeviceSchema,
   editStakeholderSchema,
 } from "./schema";
-import { toast } from "sonner";
 import { coordsToWkb } from "./utils";
 
 export async function generateRegistrationCode() {
@@ -141,10 +140,7 @@ export async function deleteDevice(deviceId: string) {
   const supabase = await createClient();
 
   try {
-    const { error } = await supabase
-      .from("devices")
-      .delete()
-      .eq("id", deviceId);
+    await supabase.from("devices").delete().eq("id", deviceId);
 
     console.log(`Device ${deviceId} deleted successfully`);
     return { success: true };
@@ -161,7 +157,7 @@ export async function deleteStakeholder(id: string) {
   const supabase = await createClient();
 
   try {
-    const { error } = await supabase.from("stakeholders").delete().eq("id", id);
+    await supabase.from("stakeholders").delete().eq("id", id);
 
     console.log(`Stakeholder ${id} deleted successfully`);
     return { success: true };

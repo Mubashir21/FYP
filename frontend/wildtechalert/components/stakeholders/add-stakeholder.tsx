@@ -1,9 +1,7 @@
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -11,13 +9,9 @@ import {
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 
-import { useRef } from "react";
-import { useRouter } from "next/navigation";
-
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
