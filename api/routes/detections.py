@@ -3,6 +3,8 @@ from datetime import datetime
 import uuid
 import json
 from core.config import get_supabase, get_api_key
+from core.email import send_detection_email
+from core.telegram import send_detection_telegram
 
 router = APIRouter()
 
@@ -111,6 +113,17 @@ async def detect(
 
     try:
         response = supabase.table("detections").insert(detection_data).execute()
+        detection_id = response.data[0]['id']
+        
+        # Send emails and Telegram alerts to stakeholders
+        try:
+            stakeholders_response = supabase.table("stakeholders").select("*").eq("subscribed", True).execute()
+            stakeholders = stakeholders_response.data or []
+            await send_detection_email(stakeholders, detection_id, detection_data, supabase)
+            await send_detection_telegram(stakeholders, detection_id, detection_data)
+        except Exception as e:
+            print("Notification error:", e)
+    
     except Exception as e:
         print("Insert error:", e)
         raise HTTPException(status_code=500, detail="Error inserting detection data")

@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from routes.detections import router as detections_router
 from routes.handshake import router as handshake_router
 from routes.register import router as register_router
+from routes.unsubscribe import router as unsubscribe_router
 
 # Rate limiting
 limiter = Limiter(key_func=get_remote_address)
@@ -37,6 +38,7 @@ def create_application() -> FastAPI:
     app.include_router(detections_router, prefix="")
     app.include_router(handshake_router, prefix="")
     app.include_router(register_router, prefix="")
+    app.include_router(unsubscribe_router, prefix="")
 
     # Rate limit error handler
     @app.exception_handler(RateLimitExceeded)
