@@ -1,3 +1,7 @@
 export default function Settings() {
-  return <div>General settings</div>;
+  return (
+    <div>
+      <h2 className="text-2xl font-bold">General Settings</h2>
+    </div>
+  );
 }

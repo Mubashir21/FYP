@@ -10,7 +10,9 @@ export type Device = {
     coordinates: [number, number]; // Assuming it's [longitude, latitude]
   };
   status: "online" | "offline"; // Assuming only these two statuses exist
-  code: string;
+  name: string;
+  registered_at: string; // ISO date string
+  api_key: string; // UUID
 };
 
 export type Detection = {
@@ -21,7 +23,7 @@ export type Detection = {
   confidence_level_camera: number; // Float (4-byte)
   audio_detected: boolean;
   camera_detected: boolean;
-  device_code: string; // Text
+  device_name: string; // Text
   weather: Record<string, any>; // JSONB (flexible object structure)
   sound_url: string; // Text (likely a URL)
   image_url: string; // Text (likely a URL)
@@ -41,4 +43,14 @@ export type Registration = {
   api_key: string; // Text (UUID)
   created_at: string; // Timestamp (ISO 8601 format)
   used_at: string | null; // Timestamp (ISO 8601 format) or null
+};
+
+export type Stakeholder = {
+  id: string; // UUID
+  name: string; // Text
+  email: string; // Text
+  phone: string; // Varchar
+  created_at: string; // Timestamp (ISO 8601 format)
+  updated_at: string; // Timestamp (ISO 8601 format)
+  subscribed: boolean; // Boolean
 };

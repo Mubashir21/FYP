@@ -4,10 +4,10 @@ import { Detection, Device } from "@/lib/definitions";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
-export const DeviceColumns: ColumnDef<Device>[] = [
+export const DeviceSummaryColumns: ColumnDef<Device>[] = [
   {
-    accessorKey: "code",
-    header: "Code",
+    accessorKey: "name",
+    header: "Name",
   },
   {
     accessorKey: "battery_level",
@@ -113,7 +113,7 @@ export const DetectionSummaryColumns: ColumnDef<Detection>[] = [
     },
   },
   {
-    accessorKey: "device_code",
+    accessorKey: "device_name",
     header: "Device",
   },
   {
