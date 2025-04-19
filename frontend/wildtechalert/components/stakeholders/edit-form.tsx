@@ -41,7 +41,6 @@ export default function EditStakeholder({
       first_name: first_name,
       last_name: last_name,
       email: stakeholder.email,
-      phone: stakeholder.phone,
     },
   });
 
@@ -128,22 +127,8 @@ export default function EditStakeholder({
             </FormItem>
           )}
         />
-        {/* Phone */}
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone</FormLabel>
-              <FormControl>
-                <Input type="tel" placeholder="e.g. +966501234567" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         {submitSuccess && (
-          <p className="text-green-600">Device added successfully!</p>
+          <p className="text-green-600">Stakeholder added successfully!</p>
         )}
         {error && <p className="text-red-600">{error}</p>}
 

@@ -62,10 +62,6 @@ export const StakeholderColumns: ColumnDef<Stakeholder>[] = [
     header: "Email",
   },
   {
-    accessorKey: "phone",
-    header: "Phone",
-  },
-  {
     accessorKey: "subscribed",
     header: "Subscribed",
     cell: ({ row }) => {

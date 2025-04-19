@@ -54,7 +54,6 @@ export type Stakeholder = {
   id: string; // UUID
   name: string; // Text
   email: string; // Text
-  phone: string; // Varchar
   created_at: string; // Timestamp (ISO 8601 format)
   updated_at: string; // Timestamp (ISO 8601 format)
   subscribed: boolean; // Boolean

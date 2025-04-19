@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import StakeholdersTable from "@/components/stakeholders/stakeholders-table";
+import StakeholdersTable from "@/components/stakeholders/table";
 import { StakeholderColumns } from "@/components/stakeholders/columns";
 import { Stakeholder } from "@/lib/definitions";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";

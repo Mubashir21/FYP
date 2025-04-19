@@ -8,8 +8,8 @@ import mimetypes
 load_dotenv()
 
 # API Details
-# base_url = "https://api.wildtechalert.com"
-base_url = "http://localhost:5000"
+base_url = "https://api.wildtechalert.com"
+# base_url = "http://localhost:5000"
 api_key = api_key = os.getenv("API_KEY")
 
 url = f"{base_url}/detect"
