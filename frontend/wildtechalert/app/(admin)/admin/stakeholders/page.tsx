@@ -1,5 +1,3 @@
-import StakeholdersTable from "@/components/stakeholders/stakeholders-table";
-import { StakeholderColumns } from "@/components/stakeholders/columns";
 import { getStakeholders } from "@/lib/data";
 import RealTimeStakeholdersPage from "@/components/stakeholders/realtime-stakeholders-table";
 

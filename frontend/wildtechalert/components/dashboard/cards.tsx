@@ -1,18 +1,3 @@
-import {
-  BanknotesIcon,
-  ClockIcon,
-  UserGroupIcon,
-  InboxIcon,
-} from "@heroicons/react/24/outline";
-// import { fetchCardData } from "@/app/lib/data";
-
-// const iconMap = {
-//   collected: BanknotesIcon,
-//   customers: UserGroupIcon,
-//   pending: ClockIcon,
-//   invoices: InboxIcon,
-// };
-
 export default async function CardWrapper() {
   //   const {
   //     numberOfCustomers,
