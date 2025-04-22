@@ -7,6 +7,7 @@ import { DetectionColumns } from "@/components/detections/columns";
 import { Detection } from "@/lib/definitions";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { toast } from "sonner";
+import { useUserRole } from "@/hooks/use-role";
 
 export default function RealTimeDetectionsTable({
   initialDetections,
@@ -15,6 +16,8 @@ export default function RealTimeDetectionsTable({
 }) {
   const [detections, setDetections] = useState(initialDetections);
   const supabase = createClient();
+
+  const role = useUserRole();
 
   useEffect(() => {
     // Set up real-time subscription
@@ -62,7 +65,7 @@ export default function RealTimeDetectionsTable({
   return (
     <div>
       <div className="mb-4 text-xl md:text-2xl">Detections</div>
-      <DetectionsTable columns={DetectionColumns} data={detections} />
+      <DetectionsTable columns={DetectionColumns(role)} data={detections} />
     </div>
   );
 }

@@ -6,7 +6,7 @@ export default function PendingApproval() {
         Thank you for registering! Your account is awaiting administrator
         approval.
       </p>
-      <p>You'll receive an email when your account is activated.</p>
+      <p>You will receive an email when your account is activated.</p>
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-type Role = "admin" | "viewer" | null;
+type Role = "admin" | "viewer";
 
 export const useUserRole = (): Role => {
-  const [role, setRole] = useState<Role>(null);
+  const [role, setRole] = useState<Role>("viewer");
   useEffect(() => {
     const fetchRole = async () => {
       const supabase = await createClient();
@@ -19,7 +19,7 @@ export const useUserRole = (): Role => {
         .eq("user_id", user.id)
         .single();
 
-      setRole(profile?.role || null);
+      setRole(profile?.role);
     };
 
     fetchRole();

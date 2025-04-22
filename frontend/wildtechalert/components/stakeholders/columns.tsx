@@ -13,15 +13,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { deleteStakeholder } from "@/lib/actions";
 import Link from "next/link";
 import { formatTimestamp } from "@/lib/utils";
-import { useUserRole } from "@/hooks/use-role";
 
-export const StakeholderColumns: ColumnDef<Stakeholder>[] = [
+export const StakeholderColumns = (role: string): ColumnDef<Stakeholder>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -98,9 +96,7 @@ export const StakeholderColumns: ColumnDef<Stakeholder>[] = [
     id: "actions",
     cell: ({ row }) => {
       const stakeholder = row.original;
-      const role = useUserRole();
-      const isAdmin = role === "admin";
-      if (!isAdmin) return null;
+      if (role !== "admin") return null;
 
       const handleDelete = async () => {
         try {

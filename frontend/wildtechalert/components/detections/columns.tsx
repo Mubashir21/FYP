@@ -16,9 +16,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { useUserRole } from "@/hooks/use-role";
 
-export const DetectionColumns: ColumnDef<Detection>[] = [
+export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -217,78 +216,12 @@ export const DetectionColumns: ColumnDef<Detection>[] = [
       );
     },
   },
-  // {
-  //   accessorKey: "weather",
-  //   header: "Weather",
-  //   cell: ({ row }) => {
-  //     const weather = row.original.weather;
 
-  //     if (!weather || Object.keys(weather).length === 0) {
-  //       return <div>N/A</div>;
-  //     }
-
-  //     return (
-  //       <div className="space-y-1">
-  //         {Object.entries(weather).map(([key, value]) => (
-  //           <div key={key} className="text-sm text-muted-foreground">
-  //             <strong>{key}:</strong> {String(value)}
-  //           </div>
-  //         ))}
-  //       </div>
-  //     );
-  //   },
-  // },
-  // {
-  //   accessorKey: "update_at",
-  //   header: "Updated At",
-  //   cell: ({ row }) => {
-  //     const timestamp = row.original.updated_at;
-
-  //     if (!timestamp) return "N/A"; // Handle missing values
-
-  //     const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
-  //       year: "numeric",
-  //       month: "short",
-  //       day: "2-digit",
-  //       hour: "2-digit",
-  //       minute: "2-digit",
-  //       second: "2-digit",
-  //       hour12: false, // Use 24-hour format
-  //       timeZoneName: "short", // Show time zone
-  //     });
-
-  //     return formattedDate;
-  //   },
-  // },
-  // {
-  //   accessorKey: "registered_at",
-  //   header: "Registered At",
-  //   cell: ({ row }) => {
-  //     const timestamp = row.original.registered_at;
-
-  //     if (!timestamp) return "N/A"; // Handle missing values
-
-  //     const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
-  //       year: "numeric",
-  //       month: "short",
-  //       day: "2-digit",
-  //       hour: "2-digit",
-  //       minute: "2-digit",
-  //       second: "2-digit",
-  //       hour12: false, // Use 24-hour format
-  //       timeZoneName: "short", // Show time zone
-  //     });
-
-  //     return formattedDate;
-  //   },
-  // },
   {
     id: "actions",
     cell: ({ row }) => {
       const detection = row.original;
-      const role = useUserRole();
-      const isAdmin = role === "admin";
-      if (!isAdmin) return null;
+      if (role !== "admin") return null;
 
       return (
         <DropdownMenu>

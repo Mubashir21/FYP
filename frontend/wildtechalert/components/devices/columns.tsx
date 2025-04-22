@@ -13,14 +13,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { deleteDevice } from "@/lib/actions";
 import Link from "next/link";
-import { useUserRole } from "@/hooks/use-role";
 
-export const DeviceColumns: ColumnDef<Device>[] = [
+export const DeviceColumns = (role: string): ColumnDef<Device>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -167,10 +165,8 @@ export const DeviceColumns: ColumnDef<Device>[] = [
     id: "actions",
     cell: ({ row }) => {
       const device = row.original;
-      const role = useUserRole();
-      const isAdmin = role === "admin";
 
-      if (!isAdmin) return null;
+      if (role !== "admin") return null;
 
       const handleDelete = async () => {
         try {

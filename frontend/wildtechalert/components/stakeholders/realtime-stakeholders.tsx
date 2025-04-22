@@ -6,6 +6,7 @@ import StakeholdersTable from "@/components/stakeholders/table";
 import { StakeholderColumns } from "@/components/stakeholders/columns";
 import { Stakeholder } from "@/lib/definitions";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
+import { useUserRole } from "@/hooks/use-role";
 
 export default function RealTimeStakeholdersPage({
   initialStakeholders,
@@ -14,6 +15,7 @@ export default function RealTimeStakeholdersPage({
 }) {
   const [stakeholders, setStakeholders] = useState(initialStakeholders);
   const supabase = createClient();
+  const role = useUserRole();
 
   useEffect(() => {
     // Set up real-time subscription
@@ -58,7 +60,10 @@ export default function RealTimeStakeholdersPage({
   return (
     <div>
       <div className="mb-4 text-xl md:text-2xl">Stakeholders</div>
-      <StakeholdersTable columns={StakeholderColumns} data={stakeholders} />
+      <StakeholdersTable
+        columns={StakeholderColumns(role)}
+        data={stakeholders}
+      />
     </div>
   );
 }
