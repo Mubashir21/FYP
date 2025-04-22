@@ -1,7 +1,7 @@
 "use client";
 
-import { RegistrationColumns } from "@/components/settings/columns";
-import { DataTable } from "@/components/settings/data-table";
+import { RegistrationColumns } from "@/components/settings/registration/columns";
+import { DataTable } from "@/components/settings/registration/data-table";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { generateRegistrationCode } from "@/lib/actions";

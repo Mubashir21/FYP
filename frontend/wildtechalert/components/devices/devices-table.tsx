@@ -1,5 +1,7 @@
 "use client";
 
+import { useUserRole } from "@/hooks/use-role";
+
 import * as React from "react";
 import {
   ColumnDef,
@@ -58,6 +60,9 @@ export default function DevicesTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const role = useUserRole();
+  const isAdmin = role === "admin";
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -96,7 +101,7 @@ export default function DevicesTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <AddDevice />
+        {isAdmin && <AddDevice />}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

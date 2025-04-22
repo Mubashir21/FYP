@@ -1,12 +1,19 @@
+"use server";
 import { AdminSidebar } from "@/components/admin-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import { getUser } from "@/lib/data";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const user = await getUser();
   return (
     <SidebarProvider>
       <div className="flex w-full">
-        <AdminSidebar />
+        <AdminSidebar user={user} />
         <main className="flex-1 p-5">
           <SidebarTrigger />
           {children}

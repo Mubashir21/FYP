@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteDevice } from "@/lib/actions";
 import Link from "next/link";
+import { useUserRole } from "@/hooks/use-role";
 
 export const DeviceColumns: ColumnDef<Device>[] = [
   {
@@ -166,6 +167,10 @@ export const DeviceColumns: ColumnDef<Device>[] = [
     id: "actions",
     cell: ({ row }) => {
       const device = row.original;
+      const role = useUserRole();
+      const isAdmin = role === "admin";
+
+      if (!isAdmin) return null;
 
       const handleDelete = async () => {
         try {
@@ -200,9 +205,6 @@ export const DeviceColumns: ColumnDef<Device>[] = [
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

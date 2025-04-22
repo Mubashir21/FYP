@@ -2,8 +2,9 @@ import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 
 const menuItems = [
-  { name: "General", link: "/admin/settings/general" },
+  { name: "Profile", link: "/admin/settings/profile" },
   { name: "Device Registration", link: "/admin/settings/registration" },
+  { name: "Account Approvals", link: "/admin/settings/approvals" },
 ];
 
 export default function layout({ children }: { children: React.ReactNode }) {
@@ -22,7 +23,7 @@ export default function layout({ children }: { children: React.ReactNode }) {
             </Link>
           ))}
         </div>
-        <div>{children} </div>
+        <div className="flex-1">{children} </div>
       </div>
     </div>
   );

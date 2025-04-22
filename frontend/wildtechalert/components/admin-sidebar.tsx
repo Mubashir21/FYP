@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Projector,
   Home,
@@ -20,6 +22,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { signOut } from "@/lib/actions";
+import { AdminSidebarProps } from "@/lib/definitions";
 
 // Menu items.
 const items = [
@@ -55,10 +59,20 @@ const items = [
   },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ user }: AdminSidebarProps) {
+  const handleSignOut = async () => {
+    await signOut();
+  };
   return (
     <Sidebar>
-      <SidebarHeader>Mike Smith</SidebarHeader>
+      <SidebarHeader>
+        <div>
+          <div>
+            {user?.user_metadata.first_name} {user?.user_metadata.last_name}
+          </div>
+          <div>{user?.user_metadata?.role}</div>
+        </div>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Overview</SidebarGroupLabel>
@@ -78,7 +92,14 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>Signout</SidebarFooter>
+      <SidebarFooter>
+        <button
+          onClick={handleSignOut}
+          className="px-4 py-2 rounded-md text-sm font-medium hover:bg-accent"
+        >
+          Sign Out
+        </button>
+      </SidebarFooter>
     </Sidebar>
   );
 }

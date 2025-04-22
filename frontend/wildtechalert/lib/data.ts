@@ -88,3 +88,29 @@ export async function getRegistration() {
 
   return data;
 }
+
+export async function getUser() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user;
+}
+
+export async function fetchPendingApprovals() {
+  const supabase = await createClient();
+
+  // First, get pending profiles
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("status", "pending");
+
+  if (error) {
+    console.error("Error fetching pending profiles:", error);
+    return [];
+  }
+
+  return data;
+}

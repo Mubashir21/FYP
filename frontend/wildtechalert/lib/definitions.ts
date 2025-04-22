@@ -1,3 +1,5 @@
+import type { User } from "@supabase/supabase-js";
+
 export type Device = {
   id: string;
   created_at: string; // ISO date string
@@ -54,7 +56,23 @@ export type Stakeholder = {
   id: string; // UUID
   name: string; // Text
   email: string; // Text
+  created_at: string; // Timestamp
+  updated_at: string; // Timestamp
+  subscribed: boolean; // Boolean
+};
+
+export type AdminSidebarProps = {
+  user: User | null;
+};
+
+export type Profile = {
+  id: string; // UUID
+  user_id: string; // UUID
+  first_name: string; // Text
+  last_name: string; // Text
+  email: string; // Text
+  status: "pending" | "approved" | "rejected"; // enum
+  role: "admin" | "viewer"; // enum
   created_at: string; // Timestamp (ISO 8601 format)
   updated_at: string; // Timestamp (ISO 8601 format)
-  subscribed: boolean; // Boolean
 };

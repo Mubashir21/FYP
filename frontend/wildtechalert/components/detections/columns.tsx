@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { useUserRole } from "@/hooks/use-role";
 
 export const DetectionColumns: ColumnDef<Detection>[] = [
   {
@@ -285,6 +286,9 @@ export const DetectionColumns: ColumnDef<Detection>[] = [
     id: "actions",
     cell: ({ row }) => {
       const detection = row.original;
+      const role = useUserRole();
+      const isAdmin = role === "admin";
+      if (!isAdmin) return null;
 
       return (
         <DropdownMenu>

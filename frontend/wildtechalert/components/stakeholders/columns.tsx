@@ -19,6 +19,7 @@ import {
 import { deleteStakeholder } from "@/lib/actions";
 import Link from "next/link";
 import { formatTimestamp } from "@/lib/utils";
+import { useUserRole } from "@/hooks/use-role";
 
 export const StakeholderColumns: ColumnDef<Stakeholder>[] = [
   {
@@ -97,6 +98,9 @@ export const StakeholderColumns: ColumnDef<Stakeholder>[] = [
     id: "actions",
     cell: ({ row }) => {
       const stakeholder = row.original;
+      const role = useUserRole();
+      const isAdmin = role === "admin";
+      if (!isAdmin) return null;
 
       const handleDelete = async () => {
         try {
@@ -131,9 +135,6 @@ export const StakeholderColumns: ColumnDef<Stakeholder>[] = [
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

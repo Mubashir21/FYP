@@ -1,6 +1,6 @@
 "use server";
 
-import { randomBytes } from "crypto";
+import { randomBytes, sign } from "crypto";
 import { createClient } from "./supabase/server";
 import { z } from "zod";
 import wkx from "wkx";
@@ -10,6 +10,8 @@ import {
   addStakeholderSchema,
   editDeviceSchema,
   editStakeholderSchema,
+  loginSchema,
+  signupSchema,
 } from "./schema";
 import { coordsToWkb } from "./utils";
 
@@ -231,5 +233,209 @@ export async function editStakeholder(
   } catch (err) {
     console.error("Error editing stakeholder:", err);
     throw err;
+  }
+}
+
+export async function loginWithEmail(data: z.infer<typeof loginSchema>) {
+  const supabase = await createClient();
+
+  // 1. Attempt authentication
+  const { data: authResponse, error: authError } =
+    await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
+
+  if (authError) {
+    throw new Error(authError.message);
+  }
+
+  // 2. Check user's approval status
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("status")
+    .eq("user_id", authResponse.user.id)
+    .single();
+
+  if (profileError) {
+    // Log out the user if we can't verify their status
+    await supabase.auth.signOut();
+    throw new Error("Could not verify account status");
+  }
+
+  // 3. Handle different status cases
+  if (profile.status === "pending") {
+    // Sign out and redirect to pending page
+    await supabase.auth.signOut();
+    redirect("/auth/pending");
+  } else if (profile.status === "rejected") {
+    await supabase.auth.signOut();
+    redirect("/auth/rejected");
+  }
+
+  redirect("/admin/dashboard");
+}
+
+export async function signup(data: z.infer<typeof signupSchema>) {
+  const supabase = await createClient();
+
+  // 1. Create auth user
+  const { data: authResponse, error: authError } = await supabase.auth.signUp({
+    email: data.email,
+    password: data.password,
+    options: {
+      //   emailRedirectTo: `${location.origin}/auth/callback`,
+      data: {
+        role: "user",
+        status: "pending",
+        first_name: data.first_name,
+        last_name: data.last_name,
+        email: data.email,
+      },
+    },
+  });
+
+  if (authError) {
+    throw new Error(authError.message);
+  }
+
+  // 2. Create profile record if signup successful
+  if (authResponse.user) {
+    const { error: profileError } = await supabase.from("profiles").insert({
+      user_id: authResponse.user.id,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      email: data.email,
+    });
+
+    if (profileError) {
+      // Rollback auth user if profile creation fails
+      await supabase.auth.admin.deleteUser(authResponse.user.id);
+      throw new Error("Profile creation failed: " + profileError.message);
+    }
+  }
+
+  return authResponse;
+}
+
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+
+export async function signOut() {
+  const cookieStore = cookies();
+
+  const supabase = await createClient();
+
+  // Clear the auth session
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    console.error("Logout error:", error.message);
+    throw error;
+  }
+
+  // Redirect to login page
+  redirect("/login");
+}
+
+export async function approveProfile(userId: string) {
+  try {
+    const supabase = await createClient();
+
+    // 1. Update status in profiles table
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ status: "approved" })
+      .eq("user_id", userId);
+
+    if (profileError) {
+      console.error("Error approving profile in profiles table:", profileError);
+      return { success: false, error: profileError.message };
+    }
+
+    const { data: userData, error: fetchError } =
+      await supabase.auth.admin.getUserById(userId);
+
+    if (fetchError) {
+      console.error("Error fetching user data:", fetchError);
+      return { success: false, error: fetchError.message };
+    }
+    // 2. Update user metadata in auth.users
+    const currentMetadata = userData.user.user_metadata || {};
+    const { error: authError } = await supabase.auth.admin.updateUserById(
+      userId,
+      {
+        user_metadata: {
+          ...currentMetadata,
+          status: "approved",
+        },
+      }
+    );
+
+    if (authError) {
+      console.error("Error updating auth user metadata:", authError);
+      return { success: false, error: authError.message };
+    }
+
+    revalidatePath("/admin/settings/approvals");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Unexpected error during profile approval:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error occurred",
+    };
+  }
+}
+
+export async function rejectProfile(userId: string) {
+  try {
+    const supabase = await createClient();
+
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ status: "rejected" })
+      .eq("user_id", userId);
+
+    if (profileError) {
+      console.error("Error rejecting profile in profiles table:", profileError);
+      return { success: false, error: profileError.message };
+    }
+
+    const { data: userData, error: fetchError } =
+      await supabase.auth.admin.getUserById(userId);
+
+    if (fetchError) {
+      console.error("Error fetching user data:", fetchError);
+      return { success: false, error: fetchError.message };
+    }
+
+    const currentMetadata = userData.user.user_metadata || {};
+    const { error: authError } = await supabase.auth.admin.updateUserById(
+      userId,
+      {
+        user_metadata: {
+          ...currentMetadata,
+          status: "rejected",
+        },
+      }
+    );
+
+    if (authError) {
+      console.error("Error updating auth user metadata:", authError);
+      return { success: false, error: authError.message };
+    }
+
+    revalidatePath("/admin/settings/approvals");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Unexpected error during profile rejection:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error occurred",
+    };
   }
 }
