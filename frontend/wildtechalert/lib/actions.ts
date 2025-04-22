@@ -1,9 +1,11 @@
 "use server";
 
-import { randomBytes, sign } from "crypto";
+import { randomBytes } from "crypto";
 import { createClient } from "./supabase/server";
 import { z } from "zod";
 import wkx from "wkx";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 import {
   addDeviceSchema,
@@ -318,13 +320,7 @@ export async function signup(data: z.infer<typeof signupSchema>) {
   return authResponse;
 }
 
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-
 export async function signOut() {
-  const cookieStore = cookies();
-
   const supabase = await createClient();
 
   // Clear the auth session
