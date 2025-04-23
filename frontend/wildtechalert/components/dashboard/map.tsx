@@ -92,7 +92,7 @@ export default function Map({ devices }: MapProps) {
                 icon={customIcon}
               >
                 <Popup>
-                  <p className="text-xl">{device.code}</p>
+                  <p className="text-xl">{device.name}</p>
                   <br />
                   Latitude: {latitude}, Longitude{longitude}
                   <br />

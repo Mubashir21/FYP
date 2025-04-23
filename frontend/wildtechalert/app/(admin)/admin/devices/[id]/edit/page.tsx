@@ -9,15 +9,10 @@ import {
 } from "@/components/ui/breadcrumb";
 import Form from "@/components/devices/edit-form";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
+type Params = Promise<{ id: string }>;
 
-export default async function Page({ params }: Props) {
-  const id = params.id;
-
+export default async function Page({ params }: { params: Params }) {
+  const { id } = await params;
   const device = await getDeviceById(id);
 
   return (

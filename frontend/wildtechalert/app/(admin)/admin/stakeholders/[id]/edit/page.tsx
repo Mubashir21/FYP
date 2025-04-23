@@ -9,12 +9,10 @@ import {
 } from "@/components/ui/breadcrumb";
 import Form from "@/components/stakeholders/edit-form";
 
-export default async function EditStakeholder({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const id = params.id;
+type Params = Promise<{ id: string }>;
+
+export default async function EditStakeholder({ params }: { params: Params }) {
+  const { id } = await params;
 
   const stakeholder = await getStakeholderById(id);
 
