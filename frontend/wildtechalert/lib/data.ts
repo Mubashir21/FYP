@@ -66,7 +66,8 @@ export async function getDetections() {
   const { data, error } = await supabase
     .from("detections")
     .select("*")
-    .limit(5000);
+    .limit(5000)
+    .order("received_at", { ascending: false });
 
   if (error) {
     console.error("Error fetching detections:", error);
