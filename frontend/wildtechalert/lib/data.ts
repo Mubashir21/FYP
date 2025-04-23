@@ -63,7 +63,10 @@ export async function getStakeholderById(id: string) {
 export async function getDetections() {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.from("detections").select("*");
+  const { data, error } = await supabase
+    .from("detections")
+    .select("*")
+    .limit(5000);
 
   if (error) {
     console.error("Error fetching detections:", error);
