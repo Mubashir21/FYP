@@ -37,7 +37,7 @@ import {
   ChevronsRight,
 } from "lucide-react";
 
-import { Button } from "../ui/button";
+import { Button } from "../../../ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -45,14 +45,14 @@ import {
   SelectTrigger,
   SelectItem,
   SelectContent,
-} from "../ui/select";
+} from "../../../ui/select";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export default function DetectionsTable<TData, TValue>({
+export default function AccountApprovalTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -87,12 +87,12 @@ export default function DetectionsTable<TData, TValue>({
     <div className="flex w-full flex-col md:col-span-4">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter devices..."
+          placeholder="Filter requests..."
           value={
-            (table.getColumn("device_name")?.getFilterValue() as string) ?? ""
+            (table.getColumn("full_name")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("device_name")?.setFilterValue(event.target.value)
+            table.getColumn("full_name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -166,7 +166,7 @@ export default function DetectionsTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  No pending approvals
                 </TableCell>
               </TableRow>
             )}
@@ -178,6 +178,24 @@ export default function DetectionsTable<TData, TValue>({
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
+        {/* <div className="flex items-center justify-end ">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div> */}
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">Rows per page</p>

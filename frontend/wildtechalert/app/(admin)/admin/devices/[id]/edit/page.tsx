@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import Form from "@/components/devices/edit-form";
+import Form from "@/components/admin/devices/edit-form";
 
 type Params = Promise<{ id: string }>;
 

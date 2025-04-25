@@ -118,3 +118,49 @@ export async function fetchPendingApprovals() {
 
   return data;
 }
+
+export async function fetchCardsData() {
+  const supabase = await createClient();
+
+  try {
+    const deviceCountPromise = supabase
+      .from("devices")
+      .select("*", { count: "exact", head: true });
+
+    const detectionCountPromise = supabase
+      .from("detections")
+      .select("*", { count: "exact", head: true });
+
+    const stakeholderCountPromise = supabase
+      .from("stakeholders")
+      .select("*", { count: "exact", head: true })
+      .eq("subscribed", "true");
+
+    const alertCountPromise = supabase
+      .from("alerts")
+      .select("*", { count: "exact", head: true });
+
+    const [deviceRes, detectionRes, stakeholderRes, alertRes] =
+      await Promise.all([
+        deviceCountPromise,
+        detectionCountPromise,
+        stakeholderCountPromise,
+        alertCountPromise,
+      ]);
+
+    if (deviceRes.error) throw deviceRes.error;
+    if (detectionRes.error) throw detectionRes.error;
+    if (stakeholderRes.error) throw stakeholderRes.error;
+    if (alertRes.error) throw alertRes.error;
+
+    return {
+      deviceCount: deviceRes.count ?? 0,
+      detectionCount: detectionRes.count ?? 0,
+      stakeholderCount: stakeholderRes.count ?? 0,
+      alertCount: alertRes.count ?? 0,
+    };
+  } catch (error) {
+    console.error("Error fetching card data:", error);
+    throw new Error("Failed to fetch cards info.");
+  }
+}

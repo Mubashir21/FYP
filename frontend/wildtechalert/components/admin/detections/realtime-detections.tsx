@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import DetectionsTable from "@/components/detections/table";
-import { DetectionColumns } from "@/components/detections/columns";
+import DetectionsTable from "@/components/admin/detections/table";
+import { DetectionColumns } from "@/components/admin/detections/columns";
 import { Detection } from "@/lib/definitions";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { toast } from "sonner";

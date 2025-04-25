@@ -1,4 +1,4 @@
-import RealTimeDetectionsTable from "@/components/detections/realtime-detections";
+import RealTimeDetectionsTable from "@/components/admin/detections/realtime-detections";
 import { getDetections } from "@/lib/data";
 
 export default async function Detections() {

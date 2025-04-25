@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import Form from "@/components/stakeholders/edit-form";
+import Form from "@/components/admin/stakeholders/edit-form";
 
 type Params = Promise<{ id: string }>;
 

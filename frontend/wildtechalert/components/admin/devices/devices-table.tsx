@@ -1,5 +1,7 @@
 "use client";
 
+import { useUserRole } from "@/hooks/use-role";
+
 import * as React from "react";
 import {
   ColumnDef,
@@ -47,15 +49,20 @@ import {
   SelectContent,
 } from "../../ui/select";
 
+import AddDevice from "./add-device";
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export default function AccountApprovalTable<TData, TValue>({
+export default function DevicesTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const role = useUserRole();
+  const isAdmin = role === "admin";
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -85,17 +92,16 @@ export default function AccountApprovalTable<TData, TValue>({
 
   return (
     <div className="flex w-full flex-col md:col-span-4">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 gap-4">
         <Input
-          placeholder="Filter requests..."
-          value={
-            (table.getColumn("full_name")?.getFilterValue() as string) ?? ""
-          }
+          placeholder="Filter devices..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("full_name")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
+        {isAdmin && <AddDevice />}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -116,7 +122,7 @@ export default function AccountApprovalTable<TData, TValue>({
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id.replace(/_/g, " ")}
+                    {column.id}
                   </DropdownMenuCheckboxItem>
                 );
               })}
@@ -166,7 +172,7 @@ export default function AccountApprovalTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No pending approvals
+                  No results.
                 </TableCell>
               </TableRow>
             )}
@@ -178,24 +184,6 @@ export default function AccountApprovalTable<TData, TValue>({
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-        {/* <div className="flex items-center justify-end ">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div> */}
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">Rows per page</p>

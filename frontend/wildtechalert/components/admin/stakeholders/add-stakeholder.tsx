@@ -6,7 +6,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { toast } from "sonner";
 
 import {
@@ -16,9 +16,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
+} from "../../ui/form";
 import { useForm } from "react-hook-form";
-import { Input } from "../ui/input";
+import { Input } from "../../ui/input";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
