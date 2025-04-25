@@ -1,4 +1,4 @@
-import RealTimeAccountApprovalTable from "@/components/settings/approvals/realtime-account-approval";
+import RealTimeAccountApprovalTable from "@/components/admin/settings/approvals/realtime-account-approval";
 import { fetchPendingApprovals } from "@/lib/data";
 
 export default async function AccountApprovals() {

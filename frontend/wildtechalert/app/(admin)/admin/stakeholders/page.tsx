@@ -1,5 +1,5 @@
 import { getStakeholders } from "@/lib/data";
-import RealTimeStakeholdersPage from "@/components/stakeholders/realtime-stakeholders";
+import RealTimeStakeholdersPage from "@/components/admin/stakeholders/realtime-stakeholders";
 
 export default async function Stakeholders() {
   const stakeholders = await getStakeholders();

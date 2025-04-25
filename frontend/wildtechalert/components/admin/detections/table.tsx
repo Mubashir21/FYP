@@ -37,7 +37,7 @@ import {
   ChevronsRight,
 } from "lucide-react";
 
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -45,22 +45,17 @@ import {
   SelectTrigger,
   SelectItem,
   SelectContent,
-} from "../ui/select";
-
-import AddStakeholder from "./add-stakeholder";
-import { useUserRole } from "@/hooks/use-role";
+} from "../../ui/select";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export default function StakeholdersTable<TData, TValue>({
+export default function DetectionsTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const role = useUserRole();
-  const isAdmin = role === "admin";
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -90,17 +85,17 @@ export default function StakeholdersTable<TData, TValue>({
 
   return (
     <div className="flex w-full flex-col md:col-span-4">
-      <div className="flex items-center py-4 gap-4">
+      <div className="flex items-center py-4">
         <Input
-          placeholder="Filter Stakeholders..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter devices..."
+          value={
+            (table.getColumn("device_name")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("device_name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
-        {isAdmin && <AddStakeholder />}
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -121,7 +116,7 @@ export default function StakeholdersTable<TData, TValue>({
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {column.id.replace(/_/g, " ")}
                   </DropdownMenuCheckboxItem>
                 );
               })}

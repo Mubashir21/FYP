@@ -1,7 +1,5 @@
 "use client";
 
-import { useUserRole } from "@/hooks/use-role";
-
 import * as React from "react";
 import {
   ColumnDef,
@@ -39,7 +37,7 @@ import {
   ChevronsRight,
 } from "lucide-react";
 
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -47,22 +45,22 @@ import {
   SelectTrigger,
   SelectItem,
   SelectContent,
-} from "../ui/select";
+} from "../../ui/select";
 
-import AddDevice from "./add-device";
+import AddStakeholder from "./add-stakeholder";
+import { useUserRole } from "@/hooks/use-role";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export default function DevicesTable<TData, TValue>({
+export default function StakeholdersTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
   const role = useUserRole();
   const isAdmin = role === "admin";
-
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -94,14 +92,15 @@ export default function DevicesTable<TData, TValue>({
     <div className="flex w-full flex-col md:col-span-4">
       <div className="flex items-center py-4 gap-4">
         <Input
-          placeholder="Filter devices..."
+          placeholder="Filter Stakeholders..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
-        {isAdmin && <AddDevice />}
+        {isAdmin && <AddStakeholder />}
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

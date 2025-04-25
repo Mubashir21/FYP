@@ -6,7 +6,7 @@ import { Device } from "@/lib/definitions";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/use-role";
-import DevicesTable from "@/components/devices/devices-table";
+import DevicesTable from "@/components/admin/devices/devices-table";
 import { DeviceColumns } from "./columns";
 
 export default function RealTimeDevicesTable({
