@@ -47,7 +47,7 @@ export function SignupForm() {
       // toast(
       //   "Account created successfully! Please check your email to verify your account."
       // );
-      router.push("/login"); // Redirect to login after successful signup
+      router.push("/auth/pending"); // Redirect to login after successful signup
     } catch (err) {
       setError(err instanceof Error ? err.message : "Signup failed.");
     } finally {

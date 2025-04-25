@@ -6,6 +6,7 @@ import { z } from "zod";
 import wkx from "wkx";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 
 import {
   addDeviceSchema,
@@ -16,6 +17,11 @@ import {
   signupSchema,
 } from "./schema";
 import { coordsToWkb } from "./utils";
+import { Resend } from "resend";
+import SignupEmail from "@/components/admin/email/signup";
+import { ApprovedEmail } from "@/components/admin/email/approved";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function generateRegistrationCode() {
   // Generate a unique registration code
@@ -317,6 +323,19 @@ export async function signup(data: z.infer<typeof signupSchema>) {
     }
   }
 
+  const { error: emailError } = await resend.emails.send({
+    from: "WildTechAlert <onboarding@wildtechalert.com>",
+    to: [data.email],
+    subject: "Thank you for signing up!",
+    react: SignupEmail({ firstName: data.first_name }),
+  });
+
+  if (emailError) {
+    console.error("Email failed to send", emailError);
+  }
+
+  await supabase.auth.signOut();
+
   return authResponse;
 }
 
@@ -338,6 +357,16 @@ export async function signOut() {
 export async function approveProfile(userId: string) {
   try {
     const supabase = await createClient();
+    const supabaseAdmin = createAdminClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    );
 
     // 1. Update status in profiles table
     const { error: profileError } = await supabase
@@ -351,7 +380,7 @@ export async function approveProfile(userId: string) {
     }
 
     const { data: userData, error: fetchError } =
-      await supabase.auth.admin.getUserById(userId);
+      await supabaseAdmin.auth.admin.getUserById(userId);
 
     if (fetchError) {
       console.error("Error fetching user data:", fetchError);
@@ -359,7 +388,7 @@ export async function approveProfile(userId: string) {
     }
     // 2. Update user metadata in auth.users
     const currentMetadata = userData.user.user_metadata || {};
-    const { error: authError } = await supabase.auth.admin.updateUserById(
+    const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(
       userId,
       {
         user_metadata: {
@@ -376,6 +405,22 @@ export async function approveProfile(userId: string) {
 
     revalidatePath("/admin/settings/approvals");
 
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("user_id", userId)
+      .single();
+
+    const { error: emailError } = await resend.emails.send({
+      from: "WildTechAlert <onboarding@wildtechalert.com>",
+      to: [data.email],
+      subject: "Your account has been approved!",
+      react: ApprovedEmail({ firstName: data.first_name }),
+    });
+
+    if (emailError) {
+      console.error("Email failed to send", emailError);
+    }
     return { success: true };
   } catch (error) {
     console.error("Unexpected error during profile approval:", error);

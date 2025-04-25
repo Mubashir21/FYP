@@ -31,10 +31,10 @@ export default async function Dashboard() {
           <SectionCards data={data} />
         </div>
         <div className="flex flex-col gap-4 md:col-span-8">
-          <Map devices={devices} />
+          <DetectionsChart detections={detections} />
         </div>
         <div className="flex flex-col gap-4 md:col-span-8">
-          <DetectionsChart detections={detections} />
+          <Map devices={devices} />
         </div>
         <div className="flex flex-col gap-4 md:col-span-2">
           <DetectionsByDevicesChart detections={detections} devices={devices} />
