@@ -1,10 +1,8 @@
 "use client";
 
 import {
-  BellIcon,
   Binoculars,
   CircleUserRound,
-  CreditCardIcon,
   LogOutIcon,
   MoreVerticalIcon,
   Settings,
@@ -29,7 +27,6 @@ import { AdminSidebarProps } from "@/lib/definitions";
 import Link from "next/link";
 import { signOut } from "@/lib/actions";
 import { useState } from "react";
-import { set } from "zod";
 
 export function NavUser({ user }: AdminSidebarProps) {
   const { isMobile } = useSidebar();

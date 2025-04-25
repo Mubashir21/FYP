@@ -5,10 +5,7 @@ import {
   Home,
   Megaphone,
   Users,
-  Settings,
   Radar,
-  CircleUserRound,
-  Binoculars,
   TreePine,
 } from "lucide-react";
 
@@ -25,7 +22,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { signOut } from "@/lib/actions";
 import { AdminSidebarProps } from "@/lib/definitions";
 import { NavUser } from "./admin/user-nav";
 

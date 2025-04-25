@@ -69,15 +69,6 @@ export function DetectionsByDevicesChart({
     return Object.values(deviceCounts);
   }, [detections, devices]);
 
-  // Calculate totals
-  const totals = React.useMemo(() => {
-    return {
-      audio: chartData.reduce((acc, curr) => acc + curr.audio, 0),
-      camera: chartData.reduce((acc, curr) => acc + curr.camera, 0),
-      total: chartData.reduce((acc, curr) => acc + curr.total, 0),
-    };
-  }, [chartData]);
-
   return (
     <Card className="shadow-lg">
       <CardHeader>

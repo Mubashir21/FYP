@@ -1,9 +1,4 @@
-import { DataTable } from "@/components/admin/dashboard/data-table";
 import Map from "@/components/admin/dashboard/map";
-import {
-  DetectionSummaryColumns,
-  DeviceSummaryColumns,
-} from "@/components/admin/dashboard/columns";
 import { fetchCardsData, getDetections, getDevices } from "@/lib/data";
 import { DetectionsChart } from "@/components/admin/dashboard/detections/detections-chart";
 import { DetectionsByDevicesChart } from "@/components/admin/dashboard/detections/detections-devices-chart";

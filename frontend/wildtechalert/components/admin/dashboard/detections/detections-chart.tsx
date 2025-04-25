@@ -67,15 +67,6 @@ export function DetectionsChart({ detections }: { detections: Detection[] }) {
     );
   }, [detections]);
 
-  const total = React.useMemo(
-    () => ({
-      audio: chartData.reduce((acc, curr) => acc + curr.audio, 0),
-      camera: chartData.reduce((acc, curr) => acc + curr.camera, 0),
-      total: chartData.reduce((acc, curr) => acc + curr.total, 0),
-    }),
-    [chartData]
-  );
-
   const [timeRange, setTimeRange] = React.useState("90d");
   const filteredData = chartData.filter((item) => {
     const date = new Date(item.date);
