@@ -6,7 +6,6 @@ import {
   Text,
   Heading,
   Button,
-  Link,
 } from "@react-email/components";
 import * as React from "react";
 
@@ -83,13 +82,6 @@ const button = {
   textDecoration: "none",
   textAlign: "center" as const,
   margin: "16px 0",
-};
-
-const link = {
-  color: "#047857",
-  textDecoration: "underline",
-  display: "block",
-  margin: "8px 0",
 };
 
 const footer = {

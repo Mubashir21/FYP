@@ -20,6 +20,7 @@ import { coordsToWkb } from "./utils";
 import { Resend } from "resend";
 import SignupEmail from "@/components/admin/email/signup";
 import { ApprovedEmail } from "@/components/admin/email/approved";
+import { AdminApprovalEmail } from "@/components/admin/email/admin-approval";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -334,6 +335,32 @@ export async function signup(data: z.infer<typeof signupSchema>) {
     console.error("Email failed to send", emailError);
   }
 
+  const { data: adminProfiles, error: adminFetchError } = await supabase
+    .from("profiles")
+    .select("email")
+    .eq("role", "admin");
+
+  if (!adminFetchError && adminProfiles && adminProfiles.length > 0) {
+    // 5. Send notification to all admins
+    const adminEmails = adminProfiles.map((profile) => profile.email);
+
+    const { error: adminEmailError } = await resend.emails.send({
+      from: "WildTechAlert <notifications@wildtechalert.com>",
+      to: adminEmails,
+      subject: "New user signup requires approval",
+      react: AdminApprovalEmail({
+        userFirstName: data.first_name,
+        userLastName: data.last_name,
+        userEmail: data.email,
+      }),
+    });
+
+    if (adminEmailError) {
+      console.error("Admin notification email failed to send", adminEmailError);
+    }
+  } else if (adminFetchError) {
+    console.error("Error fetching admin emails:", adminFetchError);
+  }
   await supabase.auth.signOut();
 
   return authResponse;

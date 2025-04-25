@@ -15,14 +15,12 @@ interface AdminNotificationEmailProps {
   userFirstName: string;
   userLastName: string;
   userEmail: string;
-  userId: string;
 }
 
-export function AdminNotificationEmail({
+export function AdminApprovalEmail({
   userFirstName,
   userLastName,
   userEmail,
-  userId,
 }: AdminNotificationEmailProps) {
   const approvalUrl = `https://wildtechalert.com/admin/settings/approvals`;
 
@@ -46,9 +44,6 @@ export function AdminNotificationEmail({
             </Text>
             <Text style={detailsItem}>
               <strong>Email:</strong> {userEmail}
-            </Text>
-            <Text style={detailsItem}>
-              <strong>User ID:</strong> {userId}
             </Text>
           </Section>
 
@@ -75,7 +70,7 @@ export function AdminNotificationEmail({
   );
 }
 
-export default AdminNotificationEmail;
+export default AdminApprovalEmail;
 
 const main = {
   backgroundColor: "#f9f9f9",
