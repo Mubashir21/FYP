@@ -14,9 +14,12 @@ export function SectionCards({ data }: { data: string[] }) {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 *:data-[slot=card]:shadow-xs *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card">
       <Card className="@container/card shadow-lg">
         <CardHeader className="relative">
-          <CardDescription>Total Detections</CardDescription>
+          <CardDescription>Today&apos;s Total Detections</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            {data[1]}
+            <span>{data[4]}</span>{" "}
+            <span className="text-base font-medium text-muted-foreground">
+              / {data[1]}
+            </span>
           </CardTitle>
           <div className="absolute right-4 top-4">
             <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
@@ -78,7 +81,7 @@ export function SectionCards({ data }: { data: string[] }) {
       </Card>
       <Card className="@container/card shadow-lg">
         <CardHeader className="relative">
-          <CardDescription>Total Stakeholders</CardDescription>
+          <CardDescription>Total Subscribed Stakeholders</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
             {data[2]}
           </CardTitle>
