@@ -47,6 +47,7 @@ export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="p-0"
         >
           Device Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -110,8 +111,8 @@ export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
         detected === true
           ? "bg-green-100 text-green-800"
           : detected === false
-          ? "bg-red-100 text-red-800"
-          : "bg-gray-100 text-gray-600";
+            ? "bg-red-100 text-red-800"
+            : "bg-gray-100 text-gray-600";
 
       return <span className={`px-2 py-1 rounded ${color}`}>{label}</span>;
     },
@@ -128,8 +129,8 @@ export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
         detected === true
           ? "bg-green-100 text-green-800"
           : detected === false
-          ? "bg-red-100 text-red-800"
-          : "bg-gray-100 text-gray-600";
+            ? "bg-red-100 text-red-800"
+            : "bg-gray-100 text-gray-600";
 
       return <span className={`px-2 py-1 rounded ${color}`}>{label}</span>;
     },
@@ -151,10 +152,10 @@ export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
         percentage === null
           ? "bg-gray-100 text-gray-600"
           : percentage > 60
-          ? "bg-green-100 text-green-800"
-          : percentage > 40
-          ? "bg-yellow-100 text-yellow-800"
-          : "bg-red-100 text-red-800";
+            ? "bg-green-100 text-green-800"
+            : percentage > 40
+              ? "bg-yellow-100 text-yellow-800"
+              : "bg-red-100 text-red-800";
 
       return <span className={`px-2 py-1 rounded ${color}`}>{label}</span>;
     },
@@ -176,10 +177,10 @@ export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
         percentage === null
           ? "bg-gray-100 text-gray-600"
           : percentage > 60
-          ? "bg-green-100 text-green-800"
-          : percentage > 40
-          ? "bg-yellow-100 text-yellow-800"
-          : "bg-red-100 text-red-800";
+            ? "bg-green-100 text-green-800"
+            : percentage > 40
+              ? "bg-yellow-100 text-yellow-800"
+              : "bg-red-100 text-red-800";
 
       return <span className={`px-2 py-1 rounded ${color}`}>{label}</span>;
     },

@@ -122,12 +122,24 @@ export async function fetchPendingApprovals() {
 export async function fetchCardsData() {
   const supabase = await createClient();
 
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const endOfToday = new Date();
+  endOfToday.setHours(23, 59, 59, 999);
+
   try {
     const deviceCountPromise = supabase
       .from("devices")
       .select("*", { count: "exact", head: true });
 
-    const detectionCountPromise = supabase
+    const todayDetectionsCountPromise = supabase
+      .from("detections")
+      .select("*", { count: "exact", head: true })
+      .gte("received_at", startOfToday.toISOString())
+      .lte("received_at", endOfToday.toISOString());
+
+    const totalDetectionCountPromise = supabase
       .from("detections")
       .select("*", { count: "exact", head: true });
 
@@ -140,22 +152,30 @@ export async function fetchCardsData() {
       .from("alerts")
       .select("*", { count: "exact", head: true });
 
-    const [deviceRes, detectionRes, stakeholderRes, alertRes] =
-      await Promise.all([
-        deviceCountPromise,
-        detectionCountPromise,
-        stakeholderCountPromise,
-        alertCountPromise,
-      ]);
+    const [
+      deviceRes,
+      todayDetectionRes,
+      totalDetectionRes,
+      stakeholderRes,
+      alertRes,
+    ] = await Promise.all([
+      deviceCountPromise,
+      todayDetectionsCountPromise,
+      totalDetectionCountPromise,
+      stakeholderCountPromise,
+      alertCountPromise,
+    ]);
 
     if (deviceRes.error) throw deviceRes.error;
-    if (detectionRes.error) throw detectionRes.error;
+    if (todayDetectionRes.error) throw todayDetectionRes.error;
+    if (totalDetectionRes.error) throw totalDetectionRes.error;
     if (stakeholderRes.error) throw stakeholderRes.error;
     if (alertRes.error) throw alertRes.error;
 
     return {
       deviceCount: deviceRes.count ?? 0,
-      detectionCount: detectionRes.count ?? 0,
+      todayDetectionCount: todayDetectionRes.count ?? 0,
+      totalDetectionCount: totalDetectionRes.count ?? 0,
       stakeholderCount: stakeholderRes.count ?? 0,
       alertCount: alertRes.count ?? 0,
     };

@@ -11,7 +11,7 @@ import {
 } from "@react-email/components";
 import * as React from "react";
 
-interface AdminNotificationEmailProps {
+interface AdminApprovalEmailProps {
   userFirstName: string;
   userLastName: string;
   userEmail: string;
@@ -21,7 +21,7 @@ export function AdminApprovalEmail({
   userFirstName,
   userLastName,
   userEmail,
-}: AdminNotificationEmailProps) {
+}: AdminApprovalEmailProps) {
   const approvalUrl = `https://wildtechalert.com/admin/settings/approvals`;
 
   return (

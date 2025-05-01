@@ -7,14 +7,14 @@ import { SectionCards } from "@/components/admin/dashboard/section-cards";
 export default async function Dashboard() {
   const devices = await getDevices();
   const detections = await getDetections();
-  const cardData = await fetchCardsData(); // this returns deviceCount, detectionCount, etc.
+  const cardData = await fetchCardsData();
 
-  // turn the card data into an array to match SectionCards props
   const data = [
     cardData.deviceCount.toLocaleString(),
-    cardData.detectionCount.toLocaleString(),
+    cardData.totalDetectionCount.toLocaleString(),
     cardData.stakeholderCount.toLocaleString(),
     cardData.alertCount.toLocaleString(),
+    cardData.todayDetectionCount.toLocaleString(),
   ];
   return (
     <main className="">

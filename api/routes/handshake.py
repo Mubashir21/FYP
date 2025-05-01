@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Header, HTTPException
 from datetime import datetime, timezone
 from core.config import get_supabase
+from typing import Optional
 
 router = APIRouter()
 
@@ -9,12 +10,14 @@ supabase = get_supabase()
 @router.post("/handshake")
 async def handshake(
     x_device_name: str = Header(None),
-    x_api_key: str = Header(None)
+    x_api_key: str = Header(None),
+    x_battery_level: Optional[float] = Header(None)  # Optional battery level header
 ):
     """
     Health check endpoint for devices
     - Validates device-specific API key
     - Updates device's last ping timestamp
+    - Optionally updates battery level
     - Returns server status
     """
     # Validate device code
@@ -45,23 +48,27 @@ async def handshake(
         # Current timestamp
         current_time = datetime.now(timezone.utc).isoformat()
         
-        # Update device's last ping
+        update_fields = {
+            "last_ping": current_time,
+        }
+
+        if x_battery_level is not None:
+            update_fields["battery_level"] = x_battery_level
+
         update_response = (
             supabase.table("devices")
-            .update({
-                "last_ping": current_time,
-            })
+            .update(update_fields)
             .eq("name", x_device_name)
             .execute()
         )
         
-        # Log the update (optional)
-        print(f"Updated device {x_device_name} last ping at {current_time}")
+        print(f"Updated device {x_device_name} at {current_time} with battery level {x_battery_level}")
         
         return {
             "status": "Online",
             "timestamp": current_time,
-            "device_name": x_device_name
+            "device_name": x_device_name,
+            "battery_level": x_battery_level
         }
     
     except Exception as e:
