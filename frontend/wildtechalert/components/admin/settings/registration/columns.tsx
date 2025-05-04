@@ -2,10 +2,10 @@
 
 import { Registration } from "@/lib/definitions";
 import { ColumnDef } from "@tanstack/react-table";
-import { useState } from "react";
-import { ArrowUpDown, Eye, EyeOff } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { formatDateSmartCompact } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { MaskedValueCell } from "./masked-value-cell";
 
 export const RegistrationColumns: ColumnDef<Registration>[] = [
   {
@@ -54,58 +54,12 @@ export const RegistrationColumns: ColumnDef<Registration>[] = [
   {
     accessorKey: "code",
     header: "Code",
-    cell: ({ row }) => {
-      const [visible, setVisible] = useState(false);
-      const value = row.original.code;
-
-      if (!value) return "N/A";
-
-      return (
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-sm">
-            {visible ? value : "••••••••••"}
-          </span>
-          <button
-            onClick={() => setVisible(!visible)}
-            className="text-muted-foreground hover:text-foreground transition"
-          >
-            {visible ? (
-              <EyeOff className="w-4 h-4" />
-            ) : (
-              <Eye className="w-4 h-4" />
-            )}
-          </button>
-        </div>
-      );
-    },
+    cell: ({ row }) => <MaskedValueCell value={row.original.code} />,
   },
   {
     accessorKey: "api_key",
     header: "API Key",
-    cell: ({ row }) => {
-      const [visible, setVisible] = useState(false);
-      const value = row.original.api_key;
-
-      if (!value) return "N/A";
-
-      return (
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-sm">
-            {visible ? value : "••••••••••"}
-          </span>
-          <button
-            onClick={() => setVisible(!visible)}
-            className="text-muted-foreground hover:text-foreground transition"
-          >
-            {visible ? (
-              <EyeOff className="w-4 h-4" />
-            ) : (
-              <Eye className="w-4 h-4" />
-            )}
-          </button>
-        </div>
-      );
-    },
+    cell: ({ row }) => <MaskedValueCell value={row.original.api_key} />,
   },
 
   {

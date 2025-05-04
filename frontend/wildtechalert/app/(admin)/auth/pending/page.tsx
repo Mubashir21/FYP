@@ -10,7 +10,7 @@ export default function PendingApproval() {
           administrator approval.
         </p>
         <p className="text-muted-foreground">
-          You'll receive an email as soon as your account is activated.
+          You will receive an email as soon as your account is activated.
         </p>
       </div>
     </div>

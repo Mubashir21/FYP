@@ -240,7 +240,6 @@ export async function editStakeholder(
       .update({
         name: fullName,
         email: email,
-        phone: data.phone,
       })
       .eq("id", stakeholderId);
 

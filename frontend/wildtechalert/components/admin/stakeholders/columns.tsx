@@ -4,11 +4,9 @@ import { Stakeholder } from "@/lib/definitions";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { MoreHorizontal } from "lucide-react";
-import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Switch } from "@/components/ui/switch";
 
 import {
   DropdownMenu,
@@ -17,10 +15,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteStakeholder, toggleSubscription } from "@/lib/actions";
+import { deleteStakeholder } from "@/lib/actions";
 import Link from "next/link";
 import { formatDateSmartCompact } from "@/lib/utils";
-import { useState } from "react";
+import { SubscriptionCell } from "./subscription-cell";
 
 export const StakeholderColumns = (role: string): ColumnDef<Stakeholder>[] => [
   {
@@ -68,40 +66,12 @@ export const StakeholderColumns = (role: string): ColumnDef<Stakeholder>[] => [
     header: "Subscribed",
     cell: ({ row }) => {
       const stakeholder = row.original;
-      const isSubscribed = stakeholder.subscribed;
-
-      const [loading, setLoading] = useState(false);
-      const [checked, setChecked] = useState(isSubscribed);
-
-      const handleToggle = async (value: boolean) => {
-        setLoading(true);
-        try {
-          await toggleSubscription(stakeholder.id, value);
-          setChecked(value);
-          toast.success(`Subscription ${value ? "enabled" : "disabled"}`);
-        } catch (err) {
-          toast.error("Failed to update subscription");
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      if (role === "admin") {
-        return (
-          <div className="flex items-center">
-            <Switch
-              checked={checked}
-              onCheckedChange={handleToggle}
-              disabled={loading}
-            />
-          </div>
-        );
-      }
-
-      return isSubscribed ? (
-        <Check className="bg-green-200 text-green-700 rounded-md p-1" />
-      ) : (
-        <X className="bg-red-200 text-red-700 rounded-md p-1" />
+      return (
+        <SubscriptionCell
+          isSubscribed={stakeholder.subscribed}
+          stakeholderId={stakeholder.id}
+          role={role}
+        />
       );
     },
   },
