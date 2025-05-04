@@ -205,12 +205,10 @@ export async function addStakeholder(
 
   const fullName = (data.first_name + " " + data.last_name).trim();
   const email = data.email.toLowerCase().trim(); // Normalize email to lowercase
-
   try {
     const { error } = await supabase.from("stakeholders").insert({
       name: fullName,
       email: email,
-      phone: data.phone,
     });
 
     if (error) {

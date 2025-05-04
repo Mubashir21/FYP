@@ -232,8 +232,8 @@ export async function getEmailAlerts(): Promise<EmailAlert[]> {
   const formatted: EmailAlert[] = data.map((record) => ({
     id: record.id,
     sent_at: record.sent_at,
-    device_name: record.alert?.detection?.device_name ?? "Unknown",
-    stakeholder_name: record.stakeholder?.name ?? "Unknown",
+    device_name: record.alert?.[0]?.detection?.[0]?.device_name ?? "Unknown",
+    stakeholder_name: record.stakeholder?.[0]?.name ?? "Unknown",
     channel: record.channel,
     status: record.status,
   }));
