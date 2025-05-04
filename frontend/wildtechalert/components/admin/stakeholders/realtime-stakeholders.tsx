@@ -59,7 +59,7 @@ export default function RealTimeStakeholdersPage({
   }, [supabase]);
   return (
     <div>
-      <div className="mb-4 text-xl md:text-2xl">Stakeholders</div>
+      {/* <div className="mb-4 text-xl md:text-2xl">Stakeholders</div> */}
       <StakeholdersTable
         columns={StakeholderColumns(role)}
         data={stakeholders}

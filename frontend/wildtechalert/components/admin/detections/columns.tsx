@@ -2,7 +2,7 @@
 
 import { Detection } from "@/lib/definitions";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, CheckCircle, XCircle } from "lucide-react";
 import { MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -12,10 +12,17 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { TimeAgo } from "../time-ago";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { toast } from "sonner";
+import { deleteDetection } from "@/lib/actions";
 
 export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
   {
@@ -57,64 +64,59 @@ export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
   },
   {
     accessorKey: "received_at",
-    header: "Received At",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="p-0"
+      >
+        Received At
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const timestamp = row.original.received_at;
-
-      if (!timestamp) return "N/A"; // Handle missing values
-
-      const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false, // Use 24-hour format
-        // timeZoneName: "short", // Show time zone
-      });
-
-      return formattedDate;
+      if (!timestamp) return "N/A";
+      return <TimeAgo timestamp={timestamp} />;
     },
   },
-  {
-    accessorKey: "detected_at",
-    header: "Detected At",
-    cell: ({ row }) => {
-      const timestamp = row.original.detected_at;
 
-      if (!timestamp) return "N/A"; // Handle missing values
+  // {
+  //   accessorKey: "detected_at",
+  //   header: "Detected At",
+  //   cell: ({ row }) => {
+  //     const timestamp = row.original.detected_at;
 
-      const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false, // Use 24-hour format
-        // timeZoneName: "short", // Show time zone
-      });
+  //     if (!timestamp) return "N/A"; // Handle missing values
 
-      return formattedDate;
-    },
-  },
+  //     const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
+  //       year: "numeric",
+  //       month: "short",
+  //       day: "2-digit",
+  //       hour: "2-digit",
+  //       minute: "2-digit",
+  //       second: "2-digit",
+  //       hour12: false, // Use 24-hour format
+  //       // timeZoneName: "short", // Show time zone
+  //     });
+
+  //     return formattedDate;
+  //   },
+  // },
   {
     accessorKey: "audio_detected",
     header: "Audio Detected",
     cell: ({ row }) => {
       const detected = row.original.audio_detected;
-
-      const label =
-        detected === true ? "Yes" : detected === false ? "No" : "N/A";
-      const color =
-        detected === true
-          ? "bg-green-100 text-green-800"
-          : detected === false
-            ? "bg-red-100 text-red-800"
-            : "bg-gray-100 text-gray-600";
-
-      return <span className={`px-2 py-1 rounded ${color}`}>{label}</span>;
+      return detected ? (
+        <span className="inline-flex items-center gap-1 text-green-700 bg-green-100 px-2 py-1 rounded-full ">
+          <CheckCircle className="w-3 h-3" /> Yes
+        </span>
+      ) : (
+        <span className="inline-flex items-center gap-1 text-red-700 bg-red-100 px-2 py-1 rounded-full ">
+          <XCircle className="w-3 h-3" /> No
+        </span>
+      );
     },
   },
   {
@@ -122,17 +124,15 @@ export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
     header: "Camera Detected",
     cell: ({ row }) => {
       const detected = row.original.camera_detected;
-
-      const label =
-        detected === true ? "Yes" : detected === false ? "No" : "N/A";
-      const color =
-        detected === true
-          ? "bg-green-100 text-green-800"
-          : detected === false
-            ? "bg-red-100 text-red-800"
-            : "bg-gray-100 text-gray-600";
-
-      return <span className={`px-2 py-1 rounded ${color}`}>{label}</span>;
+      return detected ? (
+        <span className="inline-flex items-center gap-1 text-green-700 bg-green-100 px-2 py-1 rounded-full ">
+          <CheckCircle className="w-3 h-3" /> Yes
+        </span>
+      ) : (
+        <span className="inline-flex items-center gap-1 text-red-700 bg-red-100 px-2 py-1 rounded-full ">
+          <XCircle className="w-3 h-3" /> No
+        </span>
+      );
     },
   },
   {
@@ -140,16 +140,11 @@ export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
     header: "Audio Confidence",
     cell: ({ row }) => {
       const confidence = row.original.confidence_level_audio;
-
       const percentage =
-        confidence !== null && confidence !== undefined
-          ? Math.round(confidence * 100)
-          : null;
-
-      const label = percentage !== null ? `${percentage}%` : "N/A";
-
+        confidence != null ? Math.round(confidence * 100) : null;
+      const label = percentage != null ? `${percentage}%` : "N/A";
       const color =
-        percentage === null
+        percentage == null
           ? "bg-gray-100 text-gray-600"
           : percentage > 60
             ? "bg-green-100 text-green-800"
@@ -157,7 +152,14 @@ export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
               ? "bg-yellow-100 text-yellow-800"
               : "bg-red-100 text-red-800";
 
-      return <span className={`px-2 py-1 rounded ${color}`}>{label}</span>;
+      return (
+        <span
+          className={`px-2 py-1 rounded-full font-medium ${color}`}
+          title={confidence?.toFixed(2)}
+        >
+          {label}
+        </span>
+      );
     },
   },
   {
@@ -165,16 +167,11 @@ export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
     header: "Camera Confidence",
     cell: ({ row }) => {
       const confidence = row.original.confidence_level_camera;
-
       const percentage =
-        confidence !== null && confidence !== undefined
-          ? Math.round(confidence * 100)
-          : null;
-
-      const label = percentage !== null ? `${percentage}%` : "N/A";
-
+        confidence != null ? Math.round(confidence * 100) : null;
+      const label = percentage != null ? `${percentage}%` : "N/A";
       const color =
-        percentage === null
+        percentage == null
           ? "bg-gray-100 text-gray-600"
           : percentage > 60
             ? "bg-green-100 text-green-800"
@@ -182,47 +179,91 @@ export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
               ? "bg-yellow-100 text-yellow-800"
               : "bg-red-100 text-red-800";
 
-      return <span className={`px-2 py-1 rounded ${color}`}>{label}</span>;
+      return (
+        <span
+          className={`px-2 py-1 rounded-full font-medium ${color}`}
+          title={confidence?.toFixed(2)}
+        >
+          {label}
+        </span>
+      );
     },
   },
   {
     accessorKey: "sound_url",
-    header: "Sound URL",
+    header: "Audio",
     cell: ({ row }) => {
       const soundUrl = row.original.sound_url;
       return soundUrl ? (
-        <Button variant="ghost" asChild>
+        <Button
+          variant="link"
+          className="p-0 h-auto text-sm text-slate-600 hover:underline hover:text-slate-900 transition-colors"
+          asChild
+        >
           <Link href={soundUrl} target="_blank" rel="noopener noreferrer">
-            Click here
+            View
           </Link>
         </Button>
       ) : (
-        "No link"
+        <span className="text-sm text-muted-foreground italic">No link</span>
       );
     },
   },
   {
     accessorKey: "image_url",
-    header: "Image URL",
+    header: "Image",
     cell: ({ row }) => {
       const imageUrl = row.original.image_url;
-      return imageUrl ? (
-        <Button variant="ghost" className="" asChild>
-          <Link href={imageUrl} target="_blank" rel="noopener noreferrer">
-            Click here
-          </Link>
-        </Button>
-      ) : (
-        "No link"
+
+      if (!imageUrl)
+        return (
+          <span className="text-sm text-muted-foreground italic">No link</span>
+        );
+
+      return (
+        <HoverCard>
+          <HoverCardTrigger asChild>
+            <Button
+              variant="link"
+              className="p-0 h-auto text-sm text-slate-600 hover:underline hover:text-slate-900 transition-colors"
+              asChild
+            >
+              <Link href={imageUrl} target="_blank" rel="noopener noreferrer">
+                View
+              </Link>
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent className="w-auto p-2">
+            <img
+              src={imageUrl}
+              alt="Detection preview"
+              className="rounded-md max-w-xs max-h-48 object-contain border"
+            />
+          </HoverCardContent>
+        </HoverCard>
       );
     },
   },
-
   {
     id: "actions",
     cell: ({ row }) => {
       const detection = row.original;
+
       if (role !== "admin") return null;
+
+      const handleDelete = async () => {
+        try {
+          const result = await deleteDetection(detection.id);
+          if (result.success) {
+            toast.success("Detection deleted successfully");
+          } else {
+            toast.error(result.error || "Failed to delete detection");
+          }
+        } catch (error) {
+          toast.error("An unexpected error occurred");
+          console.error("Delete error:", error);
+        }
+      };
 
       return (
         <DropdownMenu>
@@ -234,15 +275,7 @@ export const DetectionColumns = (role: string): ColumnDef<Detection>[] => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(detection.id)}
-              className="bg-red-500"
-            >
-              Delete
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

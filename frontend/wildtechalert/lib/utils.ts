@@ -102,3 +102,55 @@ export function formatTimestamp(timestamp: string | number | Date): string {
     timeZoneName: "short", // e.g., GMT, BST
   });
 }
+
+export function timeAgo(dateString: string): string {
+  const now = new Date();
+  const past = new Date(dateString);
+  const diffMs = now.getTime() - past.getTime();
+
+  const seconds = Math.floor(diffMs / 1000);
+  const minutes = Math.floor(diffMs / (1000 * 60));
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+
+  if (seconds < 60) {
+    return `${seconds} second${seconds !== 1 ? "s" : ""} ago`;
+  } else if (minutes < 60) {
+    return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
+  } else {
+    return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+  }
+}
+
+export function formatDateSmartCompact(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+
+  const isSameDay = (d1: Date, d2: Date) =>
+    d1.getDate() === d2.getDate() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getFullYear() === d2.getFullYear();
+
+  const isToday = isSameDay(date, now);
+
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  const isYesterday = isSameDay(date, yesterday);
+
+  const time = date.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  if (isToday) {
+    return `Today • ${time}`;
+  } else if (isYesterday) {
+    return `Yesterday • ${time}`;
+  }
+
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}

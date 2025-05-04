@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { approveProfile, rejectProfile } from "@/lib/actions";
+import { formatDateSmartCompact } from "@/lib/utils";
 
 export const ProfileColumns: ColumnDef<Profile>[] = [
   {
@@ -51,7 +52,7 @@ export const ProfileColumns: ColumnDef<Profile>[] = [
   },
   {
     accessorKey: "status",
-    header: "status",
+    header: "Status",
     cell: ({ row }) => {
       const status = row.original.status;
       return status.charAt(0).toUpperCase() + status.slice(1);
@@ -66,18 +67,7 @@ export const ProfileColumns: ColumnDef<Profile>[] = [
 
       if (!timestamp) return "N/A"; // Handle missing values
 
-      const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false, // Use 24-hour format
-        timeZoneName: "short", // Show time zone
-      });
-
-      return formattedDate;
+      return formatDateSmartCompact(timestamp);
     },
   },
   {

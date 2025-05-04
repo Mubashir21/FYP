@@ -8,6 +8,8 @@ import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,9 +17,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteStakeholder } from "@/lib/actions";
+import { deleteStakeholder, toggleSubscription } from "@/lib/actions";
 import Link from "next/link";
-import { formatTimestamp } from "@/lib/utils";
+import { formatDateSmartCompact } from "@/lib/utils";
+import { useState } from "react";
 
 export const StakeholderColumns = (role: string): ColumnDef<Stakeholder>[] => [
   {
@@ -64,10 +67,42 @@ export const StakeholderColumns = (role: string): ColumnDef<Stakeholder>[] => [
     accessorKey: "subscribed",
     header: "Subscribed",
     cell: ({ row }) => {
-      const isSubscribed = row.original.subscribed;
-      if (isSubscribed)
-        return <Check className="bg-green-200 text-green-700 rounded-md p-1" />;
-      else return <X className="bg-red-200 text-red-700 rounded-md p-1" />;
+      const stakeholder = row.original;
+      const isSubscribed = stakeholder.subscribed;
+
+      const [loading, setLoading] = useState(false);
+      const [checked, setChecked] = useState(isSubscribed);
+
+      const handleToggle = async (value: boolean) => {
+        setLoading(true);
+        try {
+          await toggleSubscription(stakeholder.id, value);
+          setChecked(value);
+          toast.success(`Subscription ${value ? "enabled" : "disabled"}`);
+        } catch (err) {
+          toast.error("Failed to update subscription");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      if (role === "admin") {
+        return (
+          <div className="flex items-center">
+            <Switch
+              checked={checked}
+              onCheckedChange={handleToggle}
+              disabled={loading}
+            />
+          </div>
+        );
+      }
+
+      return isSubscribed ? (
+        <Check className="bg-green-200 text-green-700 rounded-md p-1" />
+      ) : (
+        <X className="bg-red-200 text-red-700 rounded-md p-1" />
+      );
     },
   },
   {
@@ -78,20 +113,20 @@ export const StakeholderColumns = (role: string): ColumnDef<Stakeholder>[] => [
 
       if (!timestamp) return "N/A"; // Handle missing values
 
-      return formatTimestamp(timestamp);
+      return formatDateSmartCompact(timestamp);
     },
   },
-  {
-    accessorKey: "created_at",
-    header: "Created At",
-    cell: ({ row }) => {
-      const timestamp = row.original.created_at;
+  // {
+  //   accessorKey: "created_at",
+  //   header: "Created At",
+  //   cell: ({ row }) => {
+  //     const timestamp = row.original.created_at;
 
-      if (!timestamp) return "N/A"; // Handle missing values
+  //     if (!timestamp) return "N/A"; // Handle missing values
 
-      return formatTimestamp(timestamp);
-    },
-  },
+  //     return formatTimestamp(timestamp);
+  //   },
+  // },
   {
     id: "actions",
     cell: ({ row }) => {

@@ -64,7 +64,7 @@ export default function RealTimeDetectionsTable({
   }, [supabase]);
   return (
     <div>
-      <div className="mb-4 text-xl md:text-2xl">Detections</div>
+      {/* <div className="mb-4 text-xl md:text-2xl">Detections</div> */}
       <DetectionsTable columns={DetectionColumns(role)} data={detections} />
     </div>
   );

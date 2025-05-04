@@ -5,13 +5,13 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/admin/settings",
-        destination: "/admin/settings/profile",
+        destination: "/admin/settings/registration",
         permanent: true,
       },
       {
         source: "/",
-        destination: "/home",
-        permanent: true,
+        destination: "/login",
+        permanent: false,
       },
     ];
   },

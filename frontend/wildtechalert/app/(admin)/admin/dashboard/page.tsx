@@ -1,11 +1,11 @@
 import Map from "@/components/admin/dashboard/map";
-import { fetchCardsData, getDetections, getDevices } from "@/lib/data";
+import { fetchCardsData, getDetections, getDevicesByStatus } from "@/lib/data";
 import { DetectionsChart } from "@/components/admin/dashboard/detections/detections-chart";
 import { DetectionsByDevicesChart } from "@/components/admin/dashboard/detections/detections-devices-chart";
 import { SectionCards } from "@/components/admin/dashboard/section-cards";
 
 export default async function Dashboard() {
-  const devices = await getDevices();
+  const devices = await getDevicesByStatus();
   const detections = await getDetections();
   const cardData = await fetchCardsData();
 
@@ -36,7 +36,7 @@ export default async function Dashboard() {
         <div className="flex flex-col gap-4 md:col-span-8">
           <Map devices={devices} />
         </div>
-        <div className="flex flex-col gap-4 md:col-span-2">
+        <div className="flex flex-col gap-4 md:col-span-4">
           <DetectionsByDevicesChart detections={detections} devices={devices} />
         </div>
       </div>

@@ -1,9 +1,26 @@
+import { EmailAlert } from "./definitions";
 import { createClient } from "./supabase/server";
 
 export async function getDevices() {
   const supabase = await createClient();
 
   const { data, error } = await supabase.from("devices").select("*");
+
+  if (error) {
+    console.error("Error fetching devices:", error);
+    return [];
+  }
+
+  return data;
+}
+
+export async function getDevicesByStatus() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("devices")
+    .select("*")
+    .eq("status", "online"); // filter by status = 'online'
 
   if (error) {
     console.error("Error fetching devices:", error);
@@ -131,7 +148,8 @@ export async function fetchCardsData() {
   try {
     const deviceCountPromise = supabase
       .from("devices")
-      .select("*", { count: "exact", head: true });
+      .select("*", { count: "exact", head: true })
+      .eq("status", "online");
 
     const todayDetectionsCountPromise = supabase
       .from("detections")
@@ -183,4 +201,42 @@ export async function fetchCardsData() {
     console.error("Error fetching card data:", error);
     throw new Error("Failed to fetch cards info.");
   }
+}
+
+export async function getEmailAlerts(): Promise<EmailAlert[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("alert_recipients")
+    .select(
+      `
+      id,
+      sent_at,
+      channel,
+      status,
+      stakeholder:stakeholder_id(name),
+      alert:alert_id(
+        detection:detection_id(
+          device_name
+        )
+      )
+    `
+    )
+    .order("sent_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching email alerts:", error);
+    return [];
+  }
+
+  const formatted: EmailAlert[] = data.map((record) => ({
+    id: record.id,
+    sent_at: record.sent_at,
+    device_name: record.alert?.detection?.device_name ?? "Unknown",
+    stakeholder_name: record.stakeholder?.name ?? "Unknown",
+    channel: record.channel,
+    status: record.status,
+  }));
+
+  return formatted;
 }
