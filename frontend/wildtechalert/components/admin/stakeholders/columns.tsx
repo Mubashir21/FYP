@@ -4,10 +4,10 @@ import { Stakeholder } from "@/lib/definitions";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { MoreHorizontal } from "lucide-react";
-import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +17,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteStakeholder } from "@/lib/actions";
 import Link from "next/link";
-import { formatTimestamp } from "@/lib/utils";
+import { formatDateSmartCompact } from "@/lib/utils";
+import { SubscriptionCell } from "./subscription-cell";
 
 export const StakeholderColumns = (role: string): ColumnDef<Stakeholder>[] => [
   {
@@ -64,10 +65,14 @@ export const StakeholderColumns = (role: string): ColumnDef<Stakeholder>[] => [
     accessorKey: "subscribed",
     header: "Subscribed",
     cell: ({ row }) => {
-      const isSubscribed = row.original.subscribed;
-      if (isSubscribed)
-        return <Check className="bg-green-200 text-green-700 rounded-md p-1" />;
-      else return <X className="bg-red-200 text-red-700 rounded-md p-1" />;
+      const stakeholder = row.original;
+      return (
+        <SubscriptionCell
+          isSubscribed={stakeholder.subscribed}
+          stakeholderId={stakeholder.id}
+          role={role}
+        />
+      );
     },
   },
   {
@@ -78,20 +83,20 @@ export const StakeholderColumns = (role: string): ColumnDef<Stakeholder>[] => [
 
       if (!timestamp) return "N/A"; // Handle missing values
 
-      return formatTimestamp(timestamp);
+      return formatDateSmartCompact(timestamp);
     },
   },
-  {
-    accessorKey: "created_at",
-    header: "Created At",
-    cell: ({ row }) => {
-      const timestamp = row.original.created_at;
+  // {
+  //   accessorKey: "created_at",
+  //   header: "Created At",
+  //   cell: ({ row }) => {
+  //     const timestamp = row.original.created_at;
 
-      if (!timestamp) return "N/A"; // Handle missing values
+  //     if (!timestamp) return "N/A"; // Handle missing values
 
-      return formatTimestamp(timestamp);
-    },
-  },
+  //     return formatTimestamp(timestamp);
+  //   },
+  // },
   {
     id: "actions",
     cell: ({ row }) => {

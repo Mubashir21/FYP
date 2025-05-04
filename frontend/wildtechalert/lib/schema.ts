@@ -33,12 +33,6 @@ export const addStakeholderSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Second name is required"),
   email: z.string().email("Invalid email address"),
-  phone: z
-    .string()
-    .regex(
-      /^\+\d{10,15}$/,
-      "Phone number must start with '+' followed by 10 to 15 digits"
-    ),
 });
 
 export const editStakeholderSchema = addStakeholderSchema;

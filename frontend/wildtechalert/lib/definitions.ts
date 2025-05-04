@@ -76,3 +76,12 @@ export type Profile = {
   created_at: string; // Timestamp (ISO 8601 format)
   updated_at: string; // Timestamp (ISO 8601 format)
 };
+
+export type EmailAlert = {
+  id: string; // UUID
+  sent_at: string; // Timestamp (ISO 8601 format)
+  device_name: string; // Text
+  stakeholder_name: string; // Text
+  channel: "email"; // enum
+  status: "sent" | "failed" | "pending"; // enum
+};

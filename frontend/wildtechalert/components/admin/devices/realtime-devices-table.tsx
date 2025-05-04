@@ -62,7 +62,7 @@ export default function RealTimeDevicesTable({
   }, [supabase]);
   return (
     <div>
-      <div className="mb-4 text-xl md:text-2xl">Devices</div>
+      {/* <div className="mb-4 text-xl md:text-2xl">Devices</div> */}
       <DevicesTable columns={DeviceColumns(role)} data={devices} />
     </div>
   );

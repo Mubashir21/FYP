@@ -5,7 +5,6 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -44,7 +43,8 @@ export function DetectionsByDevicesChart({
     // Initialize counts for all devices
     devices.forEach((device) => {
       deviceCounts[device.name] = {
-        device: device.name.slice(5, 7),
+        // device: device.name.slice(5, 7),
+        device: device.name,
         audio: 0,
         camera: 0,
         total: 0,
@@ -73,7 +73,7 @@ export function DetectionsByDevicesChart({
     <Card className="shadow-lg">
       <CardHeader>
         <CardTitle>Detections by Device</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        {/* <CardDescription>January - June 2024</CardDescription> */}
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -86,17 +86,31 @@ export function DetectionsByDevicesChart({
               axisLine={false}
               tickFormatter={(value) => value.slice(0, 3)}
             />
-            <ChartTooltip
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            {/* <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
+              content={({ active, payload }) => {
+                if (!active || !payload?.length) return null;
+
+                const { device, total } = payload[0].payload;
+
+                return (
+                  <div className="rounded-md border bg-white p-2 shadow-sm text-sm">
+                    <div className="font-medium text-muted-foreground">
+                      Device: <span className="text-foreground">{device}</span>
+                    </div>
+                    <div>Total Detections: {total}</div>
+                  </div>
+                );
+              }}
+            /> */}
             <Bar dataKey="total" fill={chartConfig.total.color} radius={5} />
           </BarChart>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Showing total detections by device since inception
         </div>
       </CardFooter>
     </Card>

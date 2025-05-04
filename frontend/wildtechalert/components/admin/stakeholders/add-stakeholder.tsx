@@ -37,7 +37,6 @@ export default function AddStakeholder() {
       first_name: "",
       last_name: "",
       email: "",
-      phone: "",
     },
   });
 
@@ -126,24 +125,6 @@ export default function AddStakeholder() {
                     <Input
                       type="text"
                       placeholder="e.g. johndoe@wildtechalert.com"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* Phone */}
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="e.g. +966501234567"
                       {...field}
                     />
                   </FormControl>

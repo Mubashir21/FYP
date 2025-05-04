@@ -52,6 +52,23 @@ export async function generateRegistrationCode() {
   return { success: true };
 }
 
+export async function deleteDetection(id: string) {
+  const supabase = await createClient();
+
+  try {
+    await supabase.from("detections").delete().eq("id", id);
+
+    console.log(`Detection ${id} deleted successfully`);
+    return { success: true };
+  } catch (err) {
+    console.error("Unexpected error deleting detection:", err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error occurred",
+    };
+  }
+}
+
 export async function addDevice(data: z.infer<typeof addDeviceSchema>) {
   const supabase = await createClient();
 
@@ -188,12 +205,10 @@ export async function addStakeholder(
 
   const fullName = (data.first_name + " " + data.last_name).trim();
   const email = data.email.toLowerCase().trim(); // Normalize email to lowercase
-
   try {
     const { error } = await supabase.from("stakeholders").insert({
       name: fullName,
       email: email,
-      phone: data.phone,
     });
 
     if (error) {
@@ -225,7 +240,6 @@ export async function editStakeholder(
       .update({
         name: fullName,
         email: email,
-        phone: data.phone,
       })
       .eq("id", stakeholderId);
 
@@ -505,5 +519,30 @@ export async function rejectProfile(userId: string) {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",
     };
+  }
+}
+
+export async function toggleSubscription(
+  stakeholderId: string,
+  subscribed: boolean
+) {
+  const supabase = await createClient();
+
+  try {
+    const { error } = await supabase
+      .from("stakeholders")
+      .update({ subscribed })
+      .eq("id", stakeholderId);
+
+    if (error) {
+      console.error("Error updating subscription:", error.message);
+      throw new Error("Failed to update subscription");
+    }
+
+    console.log("Subscription updated successfully:", stakeholderId);
+    return { success: true };
+  } catch (err) {
+    console.error("Error toggling subscription:", err);
+    throw err;
   }
 }

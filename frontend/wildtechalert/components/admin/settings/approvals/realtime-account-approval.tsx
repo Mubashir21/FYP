@@ -61,7 +61,7 @@ export default function RealTimeAccountApprovalTable({
   }, [supabase]);
   return (
     <div>
-      <div className="mb-4 text-xl md:text-2xl">Pending Approvals</div>
+      <div className="text-2xl font-bold">Pending Approvals</div>
       <AccountApprovalTable columns={ProfileColumns} data={profiles} />
     </div>
   );

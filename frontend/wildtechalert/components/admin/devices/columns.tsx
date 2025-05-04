@@ -4,7 +4,7 @@ import { Device } from "@/lib/definitions";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { MoreHorizontal } from "lucide-react";
-
+import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteDevice } from "@/lib/actions";
 import Link from "next/link";
+import { formatDateSmartCompact } from "@/lib/utils";
+import { LastPing } from "../last-ping";
 
 export const DeviceColumns = (role: string): ColumnDef<Device>[] => [
   {
@@ -68,21 +70,9 @@ export const DeviceColumns = (role: string): ColumnDef<Device>[] => [
     header: "Last Ping",
     cell: ({ row }) => {
       const timestamp = row.original.last_ping;
+      if (!timestamp) return "N/A";
 
-      if (!timestamp) return "N/A"; // Handle missing values
-
-      const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false, // Use 24-hour format
-        timeZoneName: "short", // Show time zone
-      });
-
-      return formattedDate;
+      return <LastPing timestamp={timestamp} />;
     },
   },
   {
@@ -102,9 +92,11 @@ export const DeviceColumns = (role: string): ColumnDef<Device>[] => [
           href={`https://www.google.com/maps?q=${latitude},${longitude}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-500 underline"
+          title="View location on map"
+          className="inline-flex items-center gap-1 hover:underline"
         >
-          Open in Maps
+          <MapPin className="w-4 h-4" />
+          {latitude.toFixed(5)}, {longitude.toFixed(5)}
         </a>
       );
     },
@@ -114,31 +106,52 @@ export const DeviceColumns = (role: string): ColumnDef<Device>[] => [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status;
-      return status.charAt(0).toUpperCase() + status.slice(1);
+      const isOnline = status === "online";
+
+      const dotColor = isOnline ? "bg-green-500" : "bg-red-500";
+      const bgColor = isOnline ? "bg-green-100" : "bg-red-100";
+      const textColor = isOnline ? "text-green-700" : "text-red-700";
+      const label = isOnline ? "Online" : "Offline";
+
+      return (
+        <div
+          className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${bgColor} ${textColor} text-sm font-medium`}
+        >
+          <span className="relative flex h-2.5 w-2.5">
+            <span
+              className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${dotColor}`}
+            ></span>
+            <span
+              className={`relative inline-flex rounded-full h-2.5 w-2.5 ${dotColor}`}
+            ></span>
+          </span>
+          {label}
+        </div>
+      );
     },
   },
-  {
-    accessorKey: "update_at",
-    header: "Updated At",
-    cell: ({ row }) => {
-      const timestamp = row.original.updated_at;
+  // {
+  //   accessorKey: "update_at",
+  //   header: "Updated At",
+  //   cell: ({ row }) => {
+  //     const timestamp = row.original.updated_at;
 
-      if (!timestamp) return "N/A"; // Handle missing values
+  //     if (!timestamp) return "N/A"; // Handle missing values
 
-      const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false, // Use 24-hour format
-        timeZoneName: "short", // Show time zone
-      });
+  //     const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
+  //       year: "numeric",
+  //       month: "short",
+  //       day: "2-digit",
+  //       hour: "2-digit",
+  //       minute: "2-digit",
+  //       second: "2-digit",
+  //       hour12: false, // Use 24-hour format
+  //       timeZoneName: "short", // Show time zone
+  //     });
 
-      return formattedDate;
-    },
-  },
+  //     return formattedDate;
+  //   },
+  // },
   {
     accessorKey: "registered_at",
     header: "Registered At",
@@ -147,18 +160,7 @@ export const DeviceColumns = (role: string): ColumnDef<Device>[] => [
 
       if (!timestamp) return "N/A"; // Handle missing values
 
-      const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false, // Use 24-hour format
-        timeZoneName: "short", // Show time zone
-      });
-
-      return formattedDate;
+      return formatDateSmartCompact(timestamp);
     },
   },
   {
