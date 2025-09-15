@@ -8,11 +8,11 @@ const nextConfig: NextConfig = {
         destination: "/admin/settings/registration",
         permanent: true,
       },
-      {
-        source: "/",
-        destination: "/login",
-        permanent: false,
-      },
+      // {
+      //   source: "/",
+      //   destination: "/login",
+      //   permanent: false,
+      // },
     ];
   },
 };

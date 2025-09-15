@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { inter } from "@/styles/fonts";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ConfigProvider } from "antd";
 
 export const metadata: Metadata = {
   title: "WildTechAlert",
@@ -22,7 +23,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <ConfigProvider
+            theme={{
+              token: {
+                fontFamily: inter.style.fontFamily,
+              },
+            }}
+          >
+            {children}
+          </ConfigProvider>
         </ThemeProvider>
       </body>
     </html>
