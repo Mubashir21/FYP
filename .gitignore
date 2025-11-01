@@ -3,3 +3,5 @@ api/_pycache_
 frontend/wildtechalert/.env.local
 media
 api/test_files
+api/venv
+**/__pycache__/
